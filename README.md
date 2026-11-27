@@ -1,62 +1,151 @@
-# Rivora 🚀
+# Rivora
 
 <div align="center">
 
-[![Build & Publish Release APK](https://github.com/JishnuPG-tech/Rivora/actions/workflows/release.yml/badge.svg)](https://github.com/JishnuPG-tech/Rivora/actions/workflows/release.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
-[![Android MinSdk](https://img.shields.io/badge/MinSdk-24%20%2F%20Android%207.0%2B-blue.svg)](https://developer.android.com)
+[![Build Release APK](https://github.com/sonu-999/RivoraV2/actions/workflows/release.yml/badge.svg)](https://github.com/sonu-999/RivoraV2/actions/workflows/release.yml)
+[![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Android-3DDC84.svg)](https://developer.android.com)
+[![Kotlin](https://img.shields.io/badge/Kotlin-Compose-7F52FF.svg)](https://developer.android.com/compose)
 
-**High-performance multi-network download manager & BitTorrent engine with an integrated ad-blocking web browser for Android.**
+**A native Android download manager, BitTorrent client, and privacy-focused web browser.**
+
+[Features](#features) • [Getting Started](#getting-started) • [Building](#building-from-source) • [Privacy](#privacy) • [Contributing](#contributing)
 
 </div>
 
----
+## Overview
 
-## 🔥 What is Rivora?
+Rivora combines multi-network downloading, BitTorrent support, smart media detection, and an integrated browser in one Jetpack Compose application. It is built in Kotlin and designed for Android 7.0 (API 24) and newer.
 
-Rivora is an advanced, power-user download manager and torrent client built natively in Kotlin and Jetpack Compose using Material Design 3. It aggregates available network interfaces (Wi-Fi and Cellular) for lightning-fast multi-stream downloads, supports BitTorrent magnet links and `.torrent` files, and features an integrated multi-tab web browser equipped with an open-source ad and tracker blocker.
+> Rivora is a download and browsing tool. Use it only to access and distribute content you own or are authorized to use.
 
----
+## Features
 
-## ✨ Key Features & Capabilities
+### Download management
+- Accelerate downloads over available Wi-Fi and cellular connections
+- Monitor live progress, speed, status, and chunk activity
+- Continue work through foreground download notifications
+- Open completed files through Android's secure file-provider integration
+- Detect magnet links and downloadable files from visited pages
 
-### 🌐 1. Integrated Web Browser & Stream Capture
-- **Multi-Tab Browsing**: Smooth tab management with a persistent bottom toolbar, back/forward navigation, desktop site toggle, and bookmarks.
-- **Smart Download Detection**: Automatically detects downloadable files (ZIP, APK, ISO, documents, media streams) and BitTorrent magnet links as you browse, forwarding headers (Cookies, Referer, User-Agent) straight into Rivora's download engine.
-- **Page Media Scanner**: Floating indicator badge listing all downloadable media and archive links found on the current webpage.
+### BitTorrent
+- Download magnet links with libtorrent4j
+- Discover peers through DHT and public trackers
+- Continue downloads through the foreground service
+- Choose sequential downloading where supported
 
-### 🛡️ 2. Advanced Open-Source Ad & Popup Shield
-- **10,000+ Filter Rules**: Built-in blocklist combining **EasyList**, **AdAway**, and **Peter Lowe’s Ad Server List** for $O(1)$ domain and parent-subdomain matching.
-- **Popup & Redirect Neutralization**: Intercepts script-triggered `window.open` popups, prevents third-party site redirect hijacking, and blocks malicious intent/market schemes.
-- **Clickjacking & Overlay Guard**: Injects lightweight runtime scripts with a `MutationObserver` to automatically collapse invisible full-screen clickjacking overlays and ad banners.
-- **Cosmetic Element Hiding**: Removes sponsored slots, ad frames, and tracking iframes before they render.
-- **Site Allowlist & List Sync**: Toggle the ad shield per-site or sync fresh community blocklists with one tap.
+### Integrated browser
+- Persistent tab management and navigation controls
+- Download detection for archives, documents, APKs, and media
+- Browser bookmarks and desktop-site switching
+- Page-level media discovery
+- Cookie and referer forwarding for recognized downloads
 
-### ⚡ 3. Multi-Network Download Engine & BitTorrent
-- **Dual-Stream Acceleration**: Simultaneously download across Wi-Fi and Cellular networks for maximum throughput.
-- **BitTorrent Support**: Full libtorrent4j-powered engine supporting magnet links, DHT discovery, public trackers, and sequential downloading.
-- **Chunk Visualizer**: Live graphical matrix displaying download progress broken down into chunks across active streams.
+### Privacy and ad shielding
+- Built-in EasyList, AdAway, and Peter Lowe-style filter support
+- Subdomain and parent-domain block matching
+- Popup, redirect, and malicious browser-scheme blocking
+- Runtime protection for clickjacking overlays and cosmetic advertisements
+- Per-site shield controls and custom allowlisting
 
----
+## Screenshots
 
-## 🛠️ Recent Changes & Changelog (v1.1.7)
+> Place polished app screenshots in `docs/screenshots/` and link them here before the public release.
 
-- **WebView Ad Shield Hardening**: Upgraded URL interceptor and navigation blocking to prevent popup windows, auto-redirects, and malicious clickjacking overlays.
-- **Design System Alignment**: Unified browser start page, omnibox status badge, ad-block control sheet, and settings dialogs to match Rivora’s authentic Deep Carbon (`#0A0A0B`), Vibrant Orange (`#F36712`), and Crisp Silver (`#C5C5CB`) UI kit.
-- **Automated GitHub Releases Workflow**: Added a robust GitHub Actions workflow (`.github/workflows/release.yml`) targeting Java 21, Android SDK 36, and Gradle 9.3.1 to automatically build and attach signed `release.apk` files to GitHub Releases.
+## Getting started
 
----
+### Download an APK
 
-## 📥 Download & Installation
+Download the latest signed or CI-generated APK from the [Releases page](https://github.com/sonu-999/RivoraV2/releases).
 
-Grab the latest pre-built APK from the [GitHub Releases](https://github.com/JishnuPG-tech/Rivora/releases) page, or build it yourself using Android Studio or Gradle:
+The release workflow also uploads `rivora-release-apk` as a GitHub Actions artifact for tagged and manually dispatched builds.
+
+### Build requirements
+
+- Android Studio with Android SDK 36
+- JDK 21
+- Gradle 9.3.1 or the Gradle wrapper
+- Android 7.0 (API 24) or newer for installation
+
+## Building from source
 
 ```bash
-gradle :app:assembleRelease
+git clone https://github.com/sonu-999/RivoraV2.git
+cd RivoraV2
+./gradlew :app:assembleDebug
 ```
 
----
+The debug APK is created at:
 
-## 📜 License
+```text
+app/build/outputs/apk/debug/app-debug.apk
+```
 
-Rivora is open-source software released under the [MIT License](LICENSE).
+Run the unit tests with:
+
+```bash
+./gradlew :app:testDebugUnitTest
+```
+
+Build the release variant with:
+
+```bash
+./gradlew :app:assembleRelease
+```
+
+Release signing can be configured with `KEYSTORE_PATH`, `STORE_PASSWORD`, and `KEY_PASSWORD` environment variables.
+
+## Configuration
+
+Copy `.env.example` to `.env` and add local secrets when an optional integration requires them. Never commit real API keys or signing credentials.
+
+```dotenv
+GEMINI_API_KEY=your_local_development_key
+```
+
+The Android project also supports the standard Gradle signing variables used by the release workflow:
+
+```text
+KEYSTORE_PATH
+STORE_PASSWORD
+KEY_PASSWORD
+```
+
+## Architecture
+
+```text
+app/src/main/java/com/rivora/
+├── backend/       Download services and network engines
+├── browser/       Embedded browser and media detection
+├── ui/            Jetpack Compose screens and components
+└── MainActivity.kt
+```
+
+## Permissions
+
+Rivora requests only permissions needed by its features:
+
+- Internet and network access for downloads and browsing
+- Notifications and foreground services for download progress
+- Legacy storage access where required for public downloads
+- Package installation access for APK downloads
+
+## Privacy
+
+Rivora includes privacy and ad-blocking features, but no privacy tool can guarantee complete anonymity. Downloaded files, browsing sessions, and network traffic may still be visible to websites and network operators according to their own policies.
+
+## Contributing
+
+Contributions are welcome.
+
+1. Fork the repository.
+2. Create a descriptive feature branch.
+3. Keep changes focused and follow Kotlin and Compose conventions.
+4. Add or update tests where practical.
+5. Open a pull request with screenshots or a clear test plan for UI changes.
+
+Before reporting security-sensitive issues, review `SECURITY.md` when available.
+
+## License
+
+Rivora is released under the [MIT License](LICENSE).
