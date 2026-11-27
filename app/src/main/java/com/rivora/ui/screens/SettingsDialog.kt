@@ -343,7 +343,7 @@ fun SettingsDialog(
                             Icon(
                                 imageVector = Icons.Rounded.Shield,
                                 contentDescription = null,
-                                tint = if (adStats.isEnabled) Color(0xFF4ADE80) else RivoraColor.TextMuted,
+                                tint = if (adStats.isEnabled) RivoraColor.Orange else RivoraColor.TextMuted,
                                 modifier = Modifier.size(18.dp)
                             )
                             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -362,7 +362,7 @@ fun SettingsDialog(
                         RivoraSwitch(
                             checked = adStats.isEnabled,
                             onCheckedChange = { adBlocker.setEnabled(it) },
-                            activeTrackColor = Color(0xFF22C55E)
+                            activeTrackColor = RivoraColor.Orange
                         )
                     }
                 }

@@ -1,7 +1,6 @@
 package com.rivora.browser
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -30,7 +29,7 @@ class BrowserAndAdBlockerTest {
 
     @Test
     fun adBlocker_loadsBundledRulesAndBlocksKnownAdAndTrackerSubdomains() {
-        assertTrue("Expected bundled rules to be loaded", domains.size + patterns.size > 100)
+        assertTrue("Expected bundled rules to be loaded", domains.size + patterns.size > 200)
 
         assertNotNull(
             AdBlockRuleMatcher.findBlockedHostForRequest(
@@ -56,10 +55,69 @@ class BrowserAndAdBlockerTest {
         )
         assertNull(
             AdBlockRuleMatcher.findBlockedHostForRequest(
-                requestUrl = "https://github.com/JishnuPG-tech/Rivora/releases/download/v1.1.6/Rivora.apk",
+                requestUrl = "https://github.com/JishnuPG-tech/Rivora/releases/download/v1.1.7/Rivora.apk",
                 pageHost = "github.com",
                 isMainFrame = false,
                 isEnabled = true,
+                allowlistedSites = emptySet(),
+                blockedDomains = domains,
+                pathPatterns = patterns
+            )
+        )
+    }
+
+    @Test
+    fun adBlocker_blocksRotatingThirdPartyAdSubdomainsAndPopups() {
+        // Rotating unknown ad/popunder subdomain on a third-party domain
+        assertNotNull(
+            AdBlockRuleMatcher.findBlockedHostForRequest(
+                requestUrl = "https://pop2.rotating-domain99.xyz/script.js",
+                pageHost = "stream-example.org",
+                isMainFrame = false,
+                isEnabled = true,
+                allowlistedSites = emptySet(),
+                blockedDomains = domains,
+                pathPatterns = patterns
+            )
+        )
+
+        // Third-party popup window open attempt
+        assertNotNull(
+            AdBlockRuleMatcher.findBlockedHostForPopup(
+                targetUrl = "https://random-affiliate-promo.xyz/offer?zoneid=42",
+                pageHost = "stream-example.org",
+                isEnabled = true,
+                blockPopups = true,
+                allowlistedSites = emptySet(),
+                blockedDomains = domains,
+                pathPatterns = patterns
+            )
+        )
+
+        // Unprompted JS background redirect to third-party non-download page
+        assertNotNull(
+            AdBlockRuleMatcher.findBlockedHostForNavigation(
+                targetUrl = "https://unrelated-ad-landing.top/claim",
+                pageHost = "example.org",
+                isRedirect = false,
+                hasGesture = false,
+                isEnabled = true,
+                blockPopups = true,
+                allowlistedSites = emptySet(),
+                blockedDomains = domains,
+                pathPatterns = patterns
+            )
+        )
+
+        // Direct user-tapped download on GitHub objects CDN is allowed
+        assertNull(
+            AdBlockRuleMatcher.findBlockedHostForNavigation(
+                targetUrl = "https://objects.githubusercontent.com/github-production-release-asset/app.apk",
+                pageHost = "github.com",
+                isRedirect = true,
+                hasGesture = true,
+                isEnabled = true,
+                blockPopups = true,
                 allowlistedSites = emptySet(),
                 blockedDomains = domains,
                 pathPatterns = patterns
@@ -90,7 +148,8 @@ class BrowserAndAdBlockerTest {
                 isEnabled = true,
                 blockPopups = true,
                 allowlistedSites = emptySet(),
-                blockedDomains = domains
+                blockedDomains = domains,
+                pathPatterns = patterns
             )
         )
     }

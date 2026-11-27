@@ -1,10 +1,10 @@
-# Rivora Open-Source Ad & Tracker Filter List
-# Compatible with EasyList, EasyPrivacy, StevenBlack Hosts & Peter Lowe's Ad Server List
+# Rivora Open-Source Ad, Popup, Redirect & Tracker Filter List
+# Compatible with EasyList, EasyPrivacy, AdAway, StevenBlack Hosts & Peter Lowe's Ad Server List
 # Format:
 #   domain.tld        -> blocks domain and all subdomains
 #   ||path_fragment   -> blocks third-party URLs containing path_fragment
 
-# --- Major Ad Networks & Exchanges ---
+# --- Google / DoubleClick / Major Ad Networks ---
 doubleclick.net
 googlesyndication.com
 googleadservices.com
@@ -16,6 +16,8 @@ pagead2.googlesyndication.com
 tpc.googlesyndication.com
 partner.googleadservices.com
 afs.googlesyndication.com
+fundingchoicesmessages.google.com
+imasdk.googleapis.com
 2mdn.net
 admeld.com
 admob.com
@@ -120,6 +122,7 @@ fyber.com
 gammaplatform.com
 gumgum.com
 hilltopads.net
+hilltopads.com
 indexww.com
 infolinks.com
 inmobi.com
@@ -220,8 +223,9 @@ yieldoptimizer.com
 zedo.com
 zemanta.com
 
-# --- Aggressive Popunder / Redirect / Malvertising Ad Hosts ---
+# --- Popunder, Redirect, Push-Spam & Streaming Ad Networks ---
 adcash.com
+adcash.net
 admaven.com
 adsterra.com
 adsterratools.com
@@ -236,6 +240,7 @@ go2cloud.org
 go.oclasrv.com
 go.padstm.com
 highperformanceformat.com
+highperformancecpmgate.com
 monetag.com
 onclickbright.com
 onclickperformance.com
@@ -256,8 +261,155 @@ tsyndicate.com
 uol-ad.com
 wpadmngr.com
 zergnet.com
+acscdn.com
+adsco.re
+adskeeper.com
+adsnative.com
+adspyglass.com
+a-ads.com
+adtng.com
+adxad.com
+adxpansion.com
+bet365affiliates.com
+bnmla.com
+boudja.com
+brightonclick.com
+bvtpk.com
+cdnondemand.org
+clickadu.net
+clickonometrics.pl
+clkmon.com
+clkrev.com
+cpm20.com
+cpvfeed.com
+crakrevenue.com
+darking.info
+dats.plus
+deloton.com
+displayvertising.com
+dtscout.com
+e2ertt.com
+easy-ads.com
+eclkmpsa.com
+efektx.com
+engine.bitmedianetwork.com
+et-code.ru
+exdynsrv.com
+fastpopunder.com
+fly-ads.com
+foudes.com
+frogged.net
+ggpht-ad.com
+goadservices.com
+go.redirectingat.com
+go.skimresources.com
+good-ad.com
+hpyrdr.com
+iclickcdn.com
+intagging.com
+intellitxt.com
+in-page-push.com
+ipush.io
+istripper.com
+jdoqocy.com
+jizzads.com
+justclick.ru
+klickthru.com
+kqzyfj.com
+linkbucks.com
+linkshrink.net
+livejasmin.com
+lndg.page
+magsrv.com
+marketgid.com
+mediabong.net
+mobinner.com
+moevideo.net
+nativeads.com
+native-ads.org
+notix.io
+nsptk.com
+o333o.com
+offers-tracking.com
+onclk.net
+ouo.io
+ouo.press
+pah1.com
+pebedu.com
+plugrush.com
+popunder.net
+popundertotal.com
+popunderjs.com
+propeller-tracking.com
+push-notification.info
+pushnami.com
+pushwoosh.com
+pxl.connexity.net
+realsrv.com
+recreativ.ru
+redirect.viglink.com
+redirsrv.com
+rtmark.net
+runative-syndicate.com
+s2s.t10.io
+sape.ru
+servebom.com
+serverads.net
+shareasale.com
+sheerid.com
+skimlinks.com
+smartclick.net
+smartclip.net
+smrtgs.com
+snapads.com
+spklw.com
+star-advertising.com
+streamads.net
+syndication.exoclick.com
+syndication.realsrv.com
+t.co
+ta-a.co
+theadengine.com
+thebestoffers.com
+toponclick.com
+track.clickbooth.com
+track.volutrk.com
+trafficbroker.com
+trafficguild.com
+traffichunt.com
+trafficjunky.com
+trafficshop.com
+trafic.ro
+trwl1.com
+tubemogul.com
+tvpixel.com
+txtsrving.info
+uciservice.com
+ueuod.com
+ultraseedbox-ad.com
+unrulymedia.com
+upsellit.com
+videoadex.com
+viglink.com
+vlitag.com
+volutrk.com
+webgains.com
+xapads.com
+xclick.com
+xhamsterlive.com
+xlivrdr.com
+yadro.ru
+yashi.com
+ylx-1.com
+ylx-2.com
+ylx-3.com
+ylx-4.com
+z5x.net
+zanox.com
+zedoads.com
+zucks.net
 
-# --- Trackers, Analytics & Fingerprinting ---
+# --- Trackers, Analytics, Telemetry & Fingerprinting ---
 adjust.com
 ads.linkedin.com
 ads.pinterest.com
@@ -342,20 +494,55 @@ jsecoin.com
 minero.cc
 webminepool.com
 
-# --- Third-Party URL Path Patterns (EasyList style) ---
+# --- Third-Party URL Path & Query Patterns (EasyList style) ---
 ||/pagead/
+||/aclk?
 ||/adserver
 ||/adsense/
 ||/adsystem/
 ||/popunder
+||/popup.js
+||/pop.js
+||/pops.js
 ||/ad_banner
 ||/banner_ad
 ||/ads/js/
+||/ads/banner
+||/advert/
+||/adverts/
+||/advertising/
 ||/gtag/js
 ||/fbevents.js
-||/prebid.js
+||/prebid
 ||/show_ads.js
 ||/adsbygoogle.js
 ||/adview?
-||/adclick?
+||/adclick
 ||/doubleclick/
+||/afu.php
+||/in.php?
+||/vast.xml
+||/vast?
+||/vpaid
+||/imasdk
+||/ima3.js
+||/gpt.js
+||/pubads
+||/outbrain
+||/taboola
+||/mgid
+||/exoclick
+||/adsterra
+||/monetag
+||/propeller
+||zoneid=
+||subid=
+||clickid=
+||banid=
+||bannerid=
+||/interstitial
+||/sponsor/
+||/sponsored/
+||/pixel.gif
+||/pixel.png
+||/collect?v=

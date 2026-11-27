@@ -325,24 +325,37 @@ fun AdBlockerControlDialog(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Shield,
-                            contentDescription = "Ad Blocker",
-                            tint = if (stats.isEnabled) Color(0xFF4ADE80) else RivoraColor.TextMuted,
-                            modifier = Modifier.size(22.dp)
-                        )
+                        Box(
+                            modifier = Modifier
+                                .size(38.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(if (stats.isEnabled) RivoraColor.OrangeDim else RivoraColor.SurfaceRaised)
+                                .border(
+                                    1.dp,
+                                    if (stats.isEnabled) RivoraColor.OrangeBorder else RivoraColor.BorderDefault,
+                                    RoundedCornerShape(10.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Shield,
+                                contentDescription = "Ad Blocker",
+                                tint = if (stats.isEnabled) RivoraColor.OrangeBright else RivoraColor.TextMuted,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                         Column {
                             Text(
-                                text = "Open-Source Ad Shield",
+                                text = "Rivora Ad Shield",
                                 style = RivoraType.headingCard.copy(
                                     color = RivoraColor.TextPrimary,
                                     fontSize = 17.sp
                                 )
                             )
                             Text(
-                                text = "EasyList · StevenBlack · Peter Lowe",
+                                text = "EasyList · AdAway · Peter Lowe",
                                 style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted)
                             )
                         }
@@ -350,7 +363,7 @@ fun AdBlockerControlDialog(
                     RivoraSwitch(
                         checked = stats.isEnabled,
                         onCheckedChange = onToggleEnabled,
-                        activeTrackColor = Color(0xFF22C55E),
+                        activeTrackColor = RivoraColor.Orange,
                         modifier = Modifier.testTag("adblock_master_switch")
                     )
                 }
@@ -369,7 +382,7 @@ fun AdBlockerControlDialog(
                     MiniStatBox(
                         label = "Total Blocked",
                         value = stats.totalBlockedCount.toString(),
-                        valueColor = Color(0xFF4ADE80),
+                        valueColor = RivoraColor.StreamSecondary,
                         modifier = Modifier.weight(1f)
                     )
                     MiniStatBox(
@@ -398,7 +411,7 @@ fun AdBlockerControlDialog(
                                 Text(
                                     text = if (isCurrentSiteAllowlisted) "Shield paused for this site" else "Shield active on this site",
                                     style = RivoraType.RowSub.copy(
-                                        color = if (isCurrentSiteAllowlisted) RivoraColor.Amber else Color(0xFF4ADE80)
+                                        color = if (isCurrentSiteAllowlisted) RivoraColor.TextMuted else RivoraColor.OrangeBright
                                     )
                                 )
                             }

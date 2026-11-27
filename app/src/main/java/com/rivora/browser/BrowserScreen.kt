@@ -80,10 +80,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.rivora.R
 import com.rivora.backend.UrlProber
 import com.rivora.theme.RivoraColor
 import com.rivora.theme.RivoraType
+import com.rivora.ui.components.LiveStatusPill
+import com.rivora.ui.components.MiniStatBox
 import com.rivora.ui.components.RivoraCard
+import com.rivora.ui.components.RivoraInsetBox
 import org.json.JSONArray
 
 private const val MEDIA_SCAN_JS = """
@@ -204,11 +210,11 @@ fun BrowserScreen(
                     .height(38.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(
-                        if (adStats.isEnabled) Color(0x1E22C55E) else RivoraColor.SurfaceRaised
+                        if (adStats.isEnabled) RivoraColor.OrangeDim else RivoraColor.SurfaceRaised
                     )
                     .border(
                         1.dp,
-                        if (adStats.isEnabled) Color(0x5522C55E) else RivoraColor.BorderDefault,
+                        if (adStats.isEnabled) RivoraColor.OrangeBorder else RivoraColor.BorderDefault,
                         RoundedCornerShape(10.dp)
                     )
                     .clickable { viewModel.openModal("adblock") }
@@ -220,14 +226,14 @@ fun BrowserScreen(
                 Icon(
                     imageVector = Icons.Rounded.Shield,
                     contentDescription = "Ad Blocker Shield",
-                    tint = if (adStats.isEnabled) Color(0xFF4ADE80) else RivoraColor.TextMuted,
+                    tint = if (adStats.isEnabled) RivoraColor.OrangeBright else RivoraColor.TextMuted,
                     modifier = Modifier.size(16.dp)
                 )
                 if (adStats.pageBlockedCount > 0 || adStats.isEnabled) {
                     Text(
                         text = adStats.pageBlockedCount.toString(),
                         style = RivoraType.LivePill.copy(
-                            color = if (adStats.isEnabled) Color(0xFF4ADE80) else RivoraColor.TextMuted,
+                            color = if (adStats.isEnabled) RivoraColor.OrangeBright else RivoraColor.TextMuted,
                             fontSize = 11.sp
                         )
                     )
@@ -258,7 +264,7 @@ fun BrowserScreen(
                         else -> Icons.Rounded.Public
                     },
                     contentDescription = null,
-                    tint = if (isHttps && !isAddressFocused) Color(0xFF4ADE80) else RivoraColor.TextMuted,
+                    tint = if (isHttps && !isAddressFocused) RivoraColor.StreamSecondary else RivoraColor.TextMuted,
                     modifier = Modifier.size(15.dp)
                 )
 
@@ -732,70 +738,125 @@ private fun BrowserStartPage(
         modifier = Modifier
             .fillMaxSize()
             .background(RivoraColor.App)
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
-            RivoraCard(hasAura = true) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(
-                            text = "Rivora Web Browser",
-                            style = RivoraType.headingCard.copy(color = RivoraColor.TextPrimary)
+                    Image(
+                        painter = painterResource(id = R.drawable.rivora_logo),
+                        contentDescription = "Rivora Logo",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(RoundedCornerShape(6.dp))
+                    )
+                    Text(
+                        text = "Rivora Browser",
+                        style = RivoraType.headingScreen.copy(
+                            color = RivoraColor.TextPrimary,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
                         )
-                        Text(
-                            text = "Search via ${searchEngine.label}. Download links and streams are automatically captured by Rivora.",
-                            style = RivoraType.RowSub.copy(color = RivoraColor.TextSecondary)
-                        )
-                    }
+                    )
                 }
 
-                // Ad Shield Live Status Row
+                LiveStatusPill(
+                    text = if (adStats.isEnabled) "SHIELD ON" else "PAUSED",
+                    isPaused = !adStats.isEnabled,
+                    modifier = Modifier.clickable { onOpenAdBlocker() }
+                )
+            }
+        }
+
+        item {
+            RivoraCard(hasAura = true) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = "Web & Stream Capture",
+                        style = RivoraType.headingCard.copy(color = RivoraColor.TextPrimary)
+                    )
+                    Text(
+                        text = "Search via ${searchEngine.label}. Download links, media streams, and magnets route straight into Rivora.",
+                        style = RivoraType.RowSub.copy(color = RivoraColor.TextSecondary)
+                    )
+                }
+
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(RivoraColor.SurfaceRaised)
-                        .border(
-                            1.dp,
-                            if (adStats.isEnabled) Color(0x4422C55E) else RivoraColor.BorderSubtle,
-                            RoundedCornerShape(12.dp)
-                        )
-                        .clickable { onOpenAdBlocker() }
-                        .padding(12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    MiniStatBox(
+                        label = "Blocked",
+                        value = adStats.totalBlockedCount.toString(),
+                        valueColor = RivoraColor.OrangeBright,
+                        modifier = Modifier.weight(1f)
+                    )
+                    MiniStatBox(
+                        label = "Rules",
+                        value = adStats.ruleCount.toString(),
+                        valueColor = RivoraColor.StreamSecondary,
+                        modifier = Modifier.weight(1f)
+                    )
+                    MiniStatBox(
+                        label = "Popups",
+                        value = if (adStats.isEnabled && adStats.blockPopups) "Blocked" else "Allowed",
+                        valueColor = RivoraColor.TextPrimary,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                // Ad Shield Interactive Row using RivoraInsetBox
+                RivoraInsetBox(
+                    padding = 12.dp,
+                    modifier = Modifier.clickable { onOpenAdBlocker() }
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Shield,
-                            contentDescription = "Ad Shield",
-                            tint = if (adStats.isEnabled) Color(0xFF4ADE80) else RivoraColor.TextMuted,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Column {
-                            Text(
-                                text = if (adStats.isEnabled) "Open-Source Ad Blocker Active" else "Ad Blocker Paused",
-                                style = RivoraType.RowName.copy(color = RivoraColor.TextPrimary)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Shield,
+                                contentDescription = "Ad Shield",
+                                tint = if (adStats.isEnabled) RivoraColor.Orange else RivoraColor.TextMuted,
+                                modifier = Modifier.size(18.dp)
                             )
-                            Text(
-                                text = "${adStats.totalBlockedCount} blocked · ${adStats.ruleCount} filter rules",
-                                style = RivoraType.MetaLine.copy(color = RivoraColor.TextMuted)
-                            )
+                            Column {
+                                Text(
+                                    text = if (adStats.isEnabled) "Rivora Ad Shield Active" else "Ad Shield Paused",
+                                    style = RivoraType.RowName.copy(color = RivoraColor.TextPrimary)
+                                )
+                                Text(
+                                    text = adStats.lastUpdatedLabel ?: "EasyList · AdAway · Peter Lowe",
+                                    style = RivoraType.MetaLine.copy(color = RivoraColor.TextMuted),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         }
+                        Text(
+                            text = "Edit ▾",
+                            style = RivoraType.ButtonLabel.copy(
+                                color = RivoraColor.OrangeBright,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        )
                     }
-                    Text(
-                        text = "Configure",
-                        style = RivoraType.ButtonLabel.copy(color = RivoraColor.OrangeBright)
-                    )
                 }
             }
         }
@@ -820,9 +881,9 @@ private fun BrowserStartPage(
                             Row(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .clip(RoundedCornerShape(14.dp))
+                                    .clip(RoundedCornerShape(16.dp))
                                     .background(RivoraColor.Surface)
-                                    .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(14.dp))
+                                    .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(16.dp))
                                     .clickable { onOpenBookmark(bm) }
                                     .padding(12.dp),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -830,10 +891,10 @@ private fun BrowserStartPage(
                             ) {
                                 Box(
                                     modifier = Modifier
-                                        .size(34.dp)
-                                        .clip(RoundedCornerShape(9.dp))
-                                        .background(RivoraColor.SurfaceRaised)
-                                        .border(1.dp, RivoraColor.BorderDefault, RoundedCornerShape(9.dp)),
+                                        .size(38.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(Color(0xFF22222A))
+                                        .border(1.dp, Color(0xFF33333F), RoundedCornerShape(10.dp)),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -954,7 +1015,6 @@ private fun createConfiguredWebView(
         settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
-            databaseEnabled = true
             useWideViewPort = true
             loadWithOverviewMode = true
             builtInZoomControls = true
@@ -999,11 +1059,18 @@ private fun createConfiguredWebView(
                 } catch (_: Exception) {
                     null
                 }
-                if (adBlocker.shouldBlockPopupOrRedirect(targetUrl, pageHost)) {
+                if (adBlocker.shouldBlockNavigation(
+                        targetUrl = targetUrl,
+                        pageHost = pageHost,
+                        isRedirect = request.isRedirect,
+                        hasGesture = request.hasGesture()
+                    )
+                ) {
                     return true
                 }
                 val scheme = request.url?.scheme?.lowercase()
                 if (scheme != "http" && scheme != "https") {
+                    // Block intent://, market://, and external app redirect hijacks
                     return true
                 }
                 return false
@@ -1023,6 +1090,24 @@ private fun createConfiguredWebView(
                 )
             }
 
+            override fun onPageCommitVisible(view: WebView?, url: String?) {
+                super.onPageCommitVisible(view, url)
+                val stats = adBlocker.stats.value
+                val pageHost = try {
+                    if (!url.isNullOrBlank()) Uri.parse(url).host else null
+                } catch (_: Exception) {
+                    null
+                }
+                if (stats.isEnabled && !adBlocker.isSiteAllowlisted(pageHost)) {
+                    if (stats.blockPopups) {
+                        view?.evaluateJavascript(AdBlockerEngine.ANTI_POPUP_AND_REDIRECT_JS, null)
+                    }
+                    if (stats.cosmeticFiltering) {
+                        view?.evaluateJavascript(AdBlockerEngine.COSMETIC_FILTER_JS, null)
+                    }
+                }
+            }
+
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 onPageStateChanged(
@@ -1039,8 +1124,13 @@ private fun createConfiguredWebView(
                 } catch (_: Exception) {
                     null
                 }
-                if (stats.isEnabled && stats.cosmeticFiltering && !adBlocker.isSiteAllowlisted(pageHost)) {
-                    view?.evaluateJavascript(AdBlockerEngine.COSMETIC_FILTER_JS, null)
+                if (stats.isEnabled && !adBlocker.isSiteAllowlisted(pageHost)) {
+                    if (stats.blockPopups) {
+                        view?.evaluateJavascript(AdBlockerEngine.ANTI_POPUP_AND_REDIRECT_JS, null)
+                    }
+                    if (stats.cosmeticFiltering) {
+                        view?.evaluateJavascript(AdBlockerEngine.COSMETIC_FILTER_JS, null)
+                    }
                 }
                 view?.evaluateJavascript(MEDIA_SCAN_JS) { rawJson ->
                     val parsed = parseMediaJson(rawJson)
@@ -1087,14 +1177,36 @@ private fun createConfiguredWebView(
                 } catch (_: Exception) {
                     null
                 }
-                if (targetUrl != null && adBlocker.shouldBlockPopupOrRedirect(targetUrl, pageHost)) {
+                val stats = adBlocker.stats.value
+                val blockingActive = stats.isEnabled && stats.blockPopups && !adBlocker.isSiteAllowlisted(pageHost)
+
+                if (blockingActive) {
+                    if (targetUrl.isNullOrBlank()) {
+                        // Script-triggered window.open() without direct link hit target
+                        adBlocker.recordBlockedPopup("js-popup")
+                        return false
+                    }
+                    if (adBlocker.shouldBlockPopupOrRedirect(targetUrl, pageHost)) {
+                        return false
+                    }
+                    val targetHost = AdBlockRuleMatcher.extractHost(targetUrl)
+                    val isThirdParty = targetHost != null && pageHost != null &&
+                        AdBlockRuleMatcher.isThirdParty(targetHost, pageHost)
+                    if (isThirdParty && !AdBlockRuleMatcher.looksLikeDirectDownload(targetUrl)) {
+                        adBlocker.recordBlockedPopup(targetHost ?: "popup")
+                        return false
+                    }
+                }
+
+                if (!isUserGesture && blockingActive) {
+                    adBlocker.recordBlockedPopup("auto-popup")
                     return false
                 }
-                if (!isUserGesture && adBlocker.stats.value.isEnabled && adBlocker.stats.value.blockPopups) {
-                    return false
-                }
-                if (!targetUrl.isNullOrBlank() && (targetUrl.startsWith("http://") || targetUrl.startsWith("https://"))) {
-                    view?.loadUrl(targetUrl)
+
+                if (view != null && !targetUrl.isNullOrBlank() &&
+                    (targetUrl.startsWith("http://") || targetUrl.startsWith("https://"))
+                ) {
+                    view.loadUrl(targetUrl)
                 }
                 return false
             }
