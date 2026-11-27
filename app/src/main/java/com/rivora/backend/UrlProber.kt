@@ -162,7 +162,7 @@ object UrlProber {
             val rangeBuilder = Request.Builder()
                 .url(trimmedUrl)
                 .addHeader("Range", "bytes=0-1023")
-                .addHeader("User-Agent", headers["User-Agent"] ?: "Rivora/1.0 (Android; Mobile)")
+                .addHeader("User-Agent", headers["User-Agent"] ?: "SonuMerger/1.0 (Android; Mobile)")
                 .addHeader("Accept", "*/*")
             headers.forEach { (k, v) ->
                 if (!k.equals("User-Agent", ignoreCase = true) && v.isNotBlank()) {
@@ -179,7 +179,7 @@ object UrlProber {
             // 2. Fallback attempt: Standard GET (if server rejects Range header with 400, 403, or 416)
             val fallbackBuilder = Request.Builder()
                 .url(trimmedUrl)
-                .addHeader("User-Agent", headers["User-Agent"] ?: "Rivora/1.0 (Android; Mobile)")
+                .addHeader("User-Agent", headers["User-Agent"] ?: "SonuMerger/1.0 (Android; Mobile)")
                 .addHeader("Accept", "*/*")
             headers.forEach { (k, v) ->
                 if (!k.equals("User-Agent", ignoreCase = true) && v.isNotBlank()) {

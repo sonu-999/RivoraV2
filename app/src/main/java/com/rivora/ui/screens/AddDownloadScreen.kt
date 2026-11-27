@@ -84,7 +84,7 @@ fun AddDownloadScreen(
   var detectedFile by remember { mutableStateOf<DetectedFileInfo?>(null) }
   var probeError by remember { mutableStateOf<String?>(null) }
   var validationWarning by remember { mutableStateOf<String?>(null) }
-  var savePath by remember { mutableStateOf("Downloads/Rivora/") }
+  var savePath by remember { mutableStateOf("Downloads/SonuMerger/") }
   var selectedFolderUri by remember { mutableStateOf<Uri?>(null) }
   var selectedTorrentName by remember { mutableStateOf<String?>(null) }
 
@@ -205,14 +205,14 @@ fun AddDownloadScreen(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
       ) {
         Image(
-          painter = painterResource(id = R.drawable.rivora_logo),
-          contentDescription = "Rivora Logo",
+          painter = painterResource(id = R.drawable.sonu_merger_logo),
+          contentDescription = "Sonu Merger Logo",
           modifier = Modifier
             .size(24.dp)
             .clip(RoundedCornerShape(6.dp))
         )
         Text(
-          text = "Rivora",
+          text = "Sonu Merger",
           style = RivoraType.headingScreen.copy(color = RivoraColor.TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold)
         )
       }

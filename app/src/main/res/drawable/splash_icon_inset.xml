@@ -4,5 +4,5 @@
         android:width="64dp"
         android:height="64dp"
         android:gravity="center"
-        android:drawable="@drawable/rivora_logo" />
+        android:drawable="@drawable/sonu_merger_logo" />
 </layer-list>

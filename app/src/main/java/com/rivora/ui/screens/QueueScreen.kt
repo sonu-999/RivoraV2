@@ -112,8 +112,8 @@ fun QueueScreen(
           horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
           Image(
-            painter = painterResource(id = R.drawable.rivora_logo),
-            contentDescription = "Rivora Logo",
+            painter = painterResource(id = R.drawable.sonu_merger_logo),
+            contentDescription = "Sonu Merger Logo",
             modifier = Modifier
               .size(24.dp)
               .clip(RoundedCornerShape(6.dp))

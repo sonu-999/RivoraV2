@@ -210,7 +210,7 @@ fun UpdateScreen(
                             )
                         )
                         Text(
-                            text = "Rivora " + newVersion,
+                            text = "Sonu Merger " + newVersion,
                             style = RivoraType.rivoraText(RivoraType.Sans, 16f, FontWeight.Bold, 0f, 20f).copy(
                                 color = RivoraColor.TextPrimary
                             )
@@ -266,15 +266,15 @@ fun UpdateScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.rivora_logo),
-                                contentDescription = "Rivora Logo",
+                                painter = painterResource(id = R.drawable.sonu_merger_logo),
+                                contentDescription = "Sonu Merger Logo",
                                 modifier = Modifier.size(32.dp)
                             )
                         }
 
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = release.name.ifBlank { "Rivora Update $newVersion" },
+                                text = release.name.ifBlank { "Sonu Merger Update $newVersion" },
                                 style = RivoraType.rivoraText(RivoraType.Sans, 16f, FontWeight.Bold, 0f, 21f).copy(
                                     color = RivoraColor.TextPrimary
                                 ),

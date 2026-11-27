@@ -705,7 +705,7 @@ class AdBlockerEngine private constructor(private val context: Context) {
                     try {
                         val req = Request.Builder()
                             .url(listUrl)
-                            .header("User-Agent", "Rivora/1.1.7 (Android)")
+                            .header("User-Agent", "SonuMerger/1.1.7 (Android)")
                             .build()
                         client.newCall(req).execute().use { res ->
                             if (res.isSuccessful) {

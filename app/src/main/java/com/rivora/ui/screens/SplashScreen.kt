@@ -1,6 +1,9 @@
-﻿package com.rivora.ui.screens
+package com.rivora.ui.screens
 
 import android.content.Context
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +20,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +36,7 @@ import com.rivora.R
 import com.rivora.theme.RivoraColor
 import com.rivora.theme.RivoraType
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(
@@ -37,9 +44,24 @@ fun SplashScreen(
   onNavigateToMain: () -> Unit
 ) {
   val context = LocalContext.current
+  val contentAlpha = remember { Animatable(0f) }
+  val contentScale = remember { Animatable(0.92f) }
 
   LaunchedEffect(Unit) {
-    delay(1100)
+    launch {
+      contentAlpha.animateTo(
+        targetValue = 1f,
+        animationSpec = tween(durationMillis = 650, easing = FastOutSlowInEasing)
+      )
+    }
+    launch {
+      contentScale.animateTo(
+        targetValue = 1f,
+        animationSpec = tween(durationMillis = 650, easing = FastOutSlowInEasing)
+      )
+    }
+
+    delay(1200)
     val prefs = context.getSharedPreferences("rivora_prefs", Context.MODE_PRIVATE)
     val hasSeenOnboarding = prefs.getBoolean("has_seen_onboarding_v3", false)
     if (hasSeenOnboarding) {
@@ -60,22 +82,25 @@ fun SplashScreen(
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center,
-      modifier = Modifier.padding(horizontal = 32.dp)
+      modifier = Modifier
+        .padding(horizontal = 32.dp)
+        .alpha(contentAlpha.value)
+        .scale(contentScale.value)
     ) {
-      // Minimal Logo
+      // Sleek Sonu Merger Logo
       Image(
-        painter = painterResource(id = R.drawable.rivora_logo),
-        contentDescription = "Rivora Logo",
+        painter = painterResource(id = R.drawable.sonu_merger_logo),
+        contentDescription = "Sonu Merger Logo",
         modifier = Modifier
-          .size(56.dp)
-          .clip(RoundedCornerShape(14.dp))
+          .size(64.dp)
+          .clip(RoundedCornerShape(16.dp))
       )
 
-      Spacer(modifier = Modifier.height(18.dp))
+      Spacer(modifier = Modifier.height(20.dp))
 
       // Clean App Name
       Text(
-        text = "Rivora",
+        text = "Sonu Merger",
         style = RivoraType.rivoraText(
           family = RivoraType.Sans,
           size = 28f,
@@ -90,7 +115,7 @@ fun SplashScreen(
 
       // Short Tagline
       Text(
-        text = "Dual-Channel Downloader",
+        text = "Multi-Network Download Accelerator",
         style = RivoraType.rivoraText(
           family = RivoraType.Sans,
           size = 14f,

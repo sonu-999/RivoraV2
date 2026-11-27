@@ -67,7 +67,7 @@ fun NewDownloadDialog(
   isCellularConnected: Boolean = true
 ) {
   var urlInput by remember { mutableStateOf("") }
-  var savePath by remember { mutableStateOf("Downloads/Rivora/") }
+  var savePath by remember { mutableStateOf("Downloads/SonuMerger/") }
   var selectedFolderUri by remember { mutableStateOf<Uri?>(null) }
   var isChecking by remember { mutableStateOf(false) }
   var detectedFile by remember { mutableStateOf<DetectedFileInfo?>(null) }

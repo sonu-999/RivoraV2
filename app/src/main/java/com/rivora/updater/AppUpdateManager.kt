@@ -29,7 +29,7 @@ class AppUpdateManager private constructor(
 ) {
     companion object {
         private const val TAG = "AppUpdateManager"
-        private const val GITHUB_REPO = "JishnuPG-tech/Rivora"
+        private const val GITHUB_REPO = "sonu-999/Sonu-Merger"
         private const val RELEASES_API = "https://api.github.com/repos/$GITHUB_REPO/releases/latest"
         private const val MIN_BACKGROUND_INTERVAL_MS = 2 * 60 * 60 * 1000L // 2 hours
 
@@ -115,7 +115,7 @@ class AppUpdateManager private constructor(
                 val requestBuilder = Request.Builder()
                     .url(RELEASES_API)
                     .header("Accept", "application/vnd.github.v3+json")
-                    .header("User-Agent", "Rivora-Android-App/$currentVer")
+                    .header("User-Agent", "SonuMerger-Android-App/$currentVer")
 
                 val lastEtag = prefs.getString("last_etag", null)
                 if (!isManual && !lastEtag.isNullOrBlank()) {
@@ -220,7 +220,7 @@ class AppUpdateManager private constructor(
                 val request = Request.Builder()
                     .url(asset.downloadUrl)
                     .header("Accept", "application/octet-stream")
-                    .header("User-Agent", "Rivora-Android-Updater")
+                    .header("User-Agent", "SonuMerger-Android-Updater")
                     .build()
 
                 val response = client.newCall(request).execute()

@@ -45,7 +45,7 @@ class DownloadNotificationService : Service() {
     companion object {
         const val TAG = "DownloadNotifService"
         const val CHANNEL_ID = "rivora_downloads_channel"
-        const val CHANNEL_NAME = "Rivora Downloads"
+        const val CHANNEL_NAME = "Sonu Merger Downloads"
         const val NOTIFICATION_ID = 1001
         const val COMPLETE_NOTIFICATION_ID = 1002
 
@@ -130,7 +130,7 @@ class DownloadNotificationService : Service() {
     private fun startForegroundWithInitialNotification() {
         try {
             val notification = buildDownloadNotification(
-                title = "Rivora Download",
+                title = "Sonu Merger Download",
                 content = "Preparing high-speed download...",
                 progress = 0,
                 isIndeterminate = true,

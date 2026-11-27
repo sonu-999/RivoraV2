@@ -221,7 +221,7 @@ class DownloadEngine private constructor(
         totalBytes: Long = 0L,
         isResumable: Boolean = true,
         customTreeUri: Uri? = null,
-        displayPath: String = "Downloads/Rivora/",
+        displayPath: String = "Downloads/SonuMerger/",
         requestHeaders: Map<String, String> = emptyMap()
     ) {
         if (requestHeaders.isNotEmpty()) {
@@ -428,9 +428,9 @@ class DownloadEngine private constructor(
 
         val saveDir = try {
             val appExt = context.getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS) ?: context.filesDir
-            File(appExt, "Rivora").apply { mkdirs() }
+            File(appExt, "SonuMerger").apply { mkdirs() }
         } catch (_: Throwable) {
-            File(context.filesDir, "Rivora").apply { mkdirs() }
+            File(context.filesDir, "SonuMerger").apply { mkdirs() }
         }
 
         isPaused.set(false)

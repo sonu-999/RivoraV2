@@ -391,7 +391,7 @@ fun SettingsDialog(
                                     style = RivoraType.RowName.copy(color = RivoraColor.TextPrimary, fontWeight = FontWeight.SemiBold)
                                 )
                                 Text(
-                                    text = "Downloads/Rivora",
+                                    text = "Downloads/SonuMerger",
                                     style = RivoraType.rivoraText(RivoraType.Mono, 11f, FontWeight.Normal, 0f, 14f).copy(
                                         color = RivoraColor.TextMuted
                                     )

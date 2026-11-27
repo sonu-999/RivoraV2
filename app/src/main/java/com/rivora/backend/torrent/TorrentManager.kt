@@ -177,7 +177,7 @@ class TorrentManager private constructor(
                     settings.setInteger(settings_pack.int_types.max_queued_disk_bytes.swigValue(), 16 * 1024 * 1024)
                     settings.setInteger(settings_pack.int_types.file_pool_size.swigValue(), 40)
                     settings.setInteger(settings_pack.int_types.aio_threads.swigValue(), 4)
-                    settings.setString(settings_pack.string_types.user_agent.swigValue(), "Rivora/1.1.4 (Android)")
+                    settings.setString(settings_pack.string_types.user_agent.swigValue(), "SonuMerger/1.1.7 (Android)")
                     settings.setDhtBootstrapNodes("dht.libtorrent.org:25401,router.bittorrent.com:6881,router.utorrent.com:6881,dht.transmissionbt.com:6881")
 
                     sessionManager.start(sp)

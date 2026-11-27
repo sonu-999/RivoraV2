@@ -223,11 +223,11 @@ object DownloadStorageHelper {
                         file = null,
                         sink = sink,
                         displayName = fileName,
-                        displayPath = "$folderName/Rivora/"
+                        displayPath = "$folderName/SonuMerger/"
                     )
                 }
             } catch (e: Exception) {
-                Log.w(TAG, "Failed to create in customTreeUri, falling back to persistent Rivora: ${e.message}")
+                Log.w(TAG, "Failed to create in customTreeUri, falling back to persistent SonuMerger: ${e.message}")
             }
         }
 
@@ -248,7 +248,7 @@ object DownloadStorageHelper {
                     file = destFile,
                     sink = sink,
                     displayName = fileName,
-                    displayPath = "Downloads/Rivora/"
+                    displayPath = "Downloads/SonuMerger/"
                 )
             }
         } catch (e: Exception) {
@@ -277,7 +277,7 @@ object DownloadStorageHelper {
                         file = null,
                         sink = sink,
                         displayName = fileName,
-                        displayPath = "Downloads/Rivora/"
+                        displayPath = "Downloads/SonuMerger/"
                     )
                 }
             } catch (e: Exception) {

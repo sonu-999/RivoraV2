@@ -286,7 +286,7 @@ fun OverviewTab(
                 color = Color(0xFFC8C8CE)
               )
               Text(
-                text = "Downloads/Rivora/",
+                text = "Downloads/SonuMerger/",
                 style = RivoraType.rivoraText(RivoraType.Sans, 12.5f, FontWeight.Normal, 0f, 16f).copy(
                   color = Color(0xFFC8C8CE)
                 ),

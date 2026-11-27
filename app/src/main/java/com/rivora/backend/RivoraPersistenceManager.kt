@@ -22,8 +22,8 @@ import java.io.File
  */
 object RivoraPersistenceManager {
     private const val TAG = "RivoraPersistence"
-    const val RIVORA_FOLDER_NAME = "Rivora"
-    private const val META_FOLDER_NAME = ".rivora"
+    const val RIVORA_FOLDER_NAME = "SonuMerger"
+    private const val META_FOLDER_NAME = ".sonumerger"
 
     /**
      * Returns the primary persistent Rivora directory (e.g. /storage/emulated/0/Download/Rivora).
@@ -190,7 +190,7 @@ object RivoraPersistenceManager {
                 val url = json.optString("url", "")
                 val id = json.optString("id", "dl_${System.currentTimeMillis()}")
                 val ext = json.optString("fileExtension", fileName.substringAfterLast('.', "BIN").uppercase())
-                val destPath = json.optString("destinationPath", "Downloads/Rivora/")
+                val destPath = json.optString("destinationPath", "Downloads/SonuMerger/")
 
                 val chunksArr = json.optJSONArray("chunks")
                 val chunks = mutableListOf<ChunkProgress>()

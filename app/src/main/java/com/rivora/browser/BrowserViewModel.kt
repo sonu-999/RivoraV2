@@ -308,7 +308,7 @@ class BrowserViewModel(application: Application) : AndroidViewModel(application)
                 val finalName = if (probe.isSuccess && probe.fileName.isNotBlank()) probe.fileName else guessedName
                 val finalBytes = if (probe.isSuccess && probe.totalBytes > 0L) probe.totalBytes else contentLength.coerceAtLeast(0L)
                 val resumable = if (probe.isSuccess) probe.isResumable else true
-                onAutoDispatch(finalUrl, finalName, finalBytes, resumable, null, "Downloads/Rivora/", headers)
+                onAutoDispatch(finalUrl, finalName, finalBytes, resumable, null, "Downloads/SonuMerger/", headers)
                 _uiState.update { it.copy(lastStartedDownloadName = finalName) }
             }
             return

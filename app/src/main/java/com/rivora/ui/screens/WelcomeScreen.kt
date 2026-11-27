@@ -1,4 +1,4 @@
-﻿package com.rivora.ui.screens
+package com.rivora.ui.screens
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -84,14 +84,14 @@ fun WelcomeScreen(
           horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
           Image(
-            painter = painterResource(id = R.drawable.rivora_logo),
-            contentDescription = "Rivora Logo",
+            painter = painterResource(id = R.drawable.sonu_merger_logo),
+            contentDescription = "Sonu Merger Logo",
             modifier = Modifier
               .size(28.dp)
               .clip(RoundedCornerShape(8.dp))
           )
           Text(
-            text = "Rivora",
+            text = "Sonu Merger",
             style = RivoraType.rivoraText(
               family = RivoraType.Sans,
               size = 18f,
