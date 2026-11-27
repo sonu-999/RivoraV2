@@ -50,7 +50,13 @@ Rivora combines multi-network downloading, BitTorrent support, smart media detec
 
 ## Screenshots
 
-> Place polished app screenshots in `docs/screenshots/` and link them here before the public release.
+<div align="center">
+
+| Active Networks | Dual-Stream Download | Network Connections | Ad-Blocking Browser |
+| :---: | :---: | :---: | :---: |
+| <img src="docs/screenshots/Screenshot_20261128_025721_7b4bd236.jpg" width="200"/> | <img src="docs/screenshots/Screenshot_20261128_025732_bce12e53.jpg" width="200"/> | <img src="docs/screenshots/Screenshot_20261128_025835_a0b18b03.jpg" width="200"/> | <img src="docs/screenshots/Screenshot_20261128_025849_468d0f87.jpg" width="200"/> |
+
+</div>
 
 ## Getting started
 
