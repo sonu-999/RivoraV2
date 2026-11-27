@@ -761,7 +761,7 @@ private fun BrowserStartPage(
                             .clip(RoundedCornerShape(6.dp))
                     )
                     Text(
-                        text = "Rivora Browser",
+                        text = "Sonu Merger",
                         style = RivoraType.headingScreen.copy(
                             color = RivoraColor.TextPrimary,
                             fontSize = 20.sp,

@@ -119,7 +119,7 @@ fun QueueScreen(
               .clip(RoundedCornerShape(6.dp))
           )
           Text(
-            text = "Rivora",
+            text = "Sonu Merger",
             style = RivoraType.headingScreen.copy(
               color = RivoraColor.TextPrimary,
               fontSize = 20.sp,

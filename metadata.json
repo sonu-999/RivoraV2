@@ -1,6 +1,6 @@
 {
-  "name": "Rivora",
-  "description": "High-performance multi-network download manager with an integrated ad-blocking web browser.",
+  "name": "Sonu Merger",
+  "description": "High-performance multi-network download manager and BitTorrent client with a privacy ad-blocking web browser by Sonu.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

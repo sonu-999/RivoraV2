@@ -1,8 +1,8 @@
-# Rivora
+# Sonu Merger
 
 <div align="center">
 
-[![Build Release APK](https://github.com/sonu-999/RivoraV2/actions/workflows/release.yml/badge.svg)](https://github.com/sonu-999/RivoraV2/actions/workflows/release.yml)
+[![Build Release APK](https://github.com/sonu-999/Sonu Merger/actions/workflows/release.yml/badge.svg)](https://github.com/sonu-999/Sonu Merger/actions/workflows/release.yml)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Android-3DDC84.svg)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Compose-7F52FF.svg)](https://developer.android.com/compose)
@@ -15,9 +15,9 @@
 
 ## Overview
 
-Rivora combines multi-network downloading, BitTorrent support, smart media detection, and an integrated browser in one Jetpack Compose application. It is built in Kotlin and designed for Android 7.0 (API 24) and newer.
+Sonu Merger combines multi-network downloading, BitTorrent support, smart media detection, and an integrated browser in one Jetpack Compose application. It is built in Kotlin and designed for Android 7.0 (API 24) and newer.
 
-> Rivora is a download and browsing tool. Use it only to access and distribute content you own or are authorized to use.
+> Sonu Merger is a download and browsing tool. Use it only to access and distribute content you own or are authorized to use.
 
 ## Features
 
@@ -62,9 +62,9 @@ Rivora combines multi-network downloading, BitTorrent support, smart media detec
 
 ### Download an APK
 
-Download the latest signed or CI-generated APK from the [Releases page](https://github.com/sonu-999/RivoraV2/releases).
+Download the latest signed or CI-generated APK from the [Releases page](https://github.com/sonu-999/Sonu Merger/releases).
 
-The release workflow also uploads `rivora-release-apk` as a GitHub Actions artifact for tagged and manually dispatched builds.
+The release workflow also uploads `sonumerger-release-apk` as a GitHub Actions artifact for tagged and manually dispatched builds.
 
 ### Build requirements
 
@@ -76,8 +76,8 @@ The release workflow also uploads `rivora-release-apk` as a GitHub Actions artif
 ## Building from source
 
 ```bash
-git clone https://github.com/sonu-999/RivoraV2.git
-cd RivoraV2
+git clone https://github.com/sonu-999/Sonu Merger.git
+cd Sonu Merger
 ./gradlew :app:assembleDebug
 ```
 
@@ -120,7 +120,7 @@ KEY_PASSWORD
 ## Architecture
 
 ```text
-app/src/main/java/com/rivora/
+app/src/main/java/com/sonumerger/
 ├── backend/       Download services and network engines
 ├── browser/       Embedded browser and media detection
 ├── ui/            Jetpack Compose screens and components
@@ -129,7 +129,7 @@ app/src/main/java/com/rivora/
 
 ## Permissions
 
-Rivora requests only permissions needed by its features:
+Sonu Merger requests only permissions needed by its features:
 
 - Internet and network access for downloads and browsing
 - Notifications and foreground services for download progress
@@ -138,7 +138,7 @@ Rivora requests only permissions needed by its features:
 
 ## Privacy
 
-Rivora includes privacy and ad-blocking features, but no privacy tool can guarantee complete anonymity. Downloaded files, browsing sessions, and network traffic may still be visible to websites and network operators according to their own policies.
+Sonu Merger includes privacy and ad-blocking features, but no privacy tool can guarantee complete anonymity. Downloaded files, browsing sessions, and network traffic may still be visible to websites and network operators according to their own policies.
 
 ## Contributing
 
@@ -154,4 +154,4 @@ Before reporting security-sensitive issues, review `SECURITY.md` when available.
 
 ## License
 
-Rivora is released under the [MIT License](LICENSE).
+Sonu Merger is released under the [MIT License](LICENSE).

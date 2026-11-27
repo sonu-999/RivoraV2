@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Rivora"
+rootProject.name = "Sonu Merger"
 
 include(":app")
