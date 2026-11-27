@@ -1,0 +1,109 @@
+name: Build & Publish Release APK
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ "v*" ]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Release tag (e.g. v1.1.7)"
+        required: true
+        default: "v1.1.7"
+
+permissions:
+  contents: write
+
+jobs:
+  build-release-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Set up Android SDK
+        shell: bash
+        run: |
+          set +o pipefail
+          SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          SDKMANAGER="$(find "$SDK_ROOT" -name sdkmanager -type f 2>/dev/null | head -n 1)"
+          if [ -z "$SDKMANAGER" ]; then
+            mkdir -p "$SDK_ROOT/cmdline-tools"
+            curl -fsSL "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" -o /tmp/cmdline-tools.zip
+            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-unpack
+            mv /tmp/cmdline-unpack/cmdline-tools "$SDK_ROOT/cmdline-tools/latest"
+            SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses >/dev/null 2>&1 || true
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --install "platform-tools" "build-tools;36.0.0" "platforms;android-36"
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --install "platforms;android-36.1" || \
+            yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --channel=1 --install "platforms;android-36.1" || true
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.3.1"
+
+      - name: Verify Gradle
+        shell: bash
+        run: |
+          if ! command -v gradle >/dev/null 2>&1; then
+            curl -fsSL "https://services.gradle.org/distributions/gradle-9.3.1-bin.zip" -o /tmp/gradle.zip
+            mkdir -p "$HOME/gradle-dist"
+            unzip -q /tmp/gradle.zip -d "$HOME/gradle-dist"
+            GRADLE_BIN="$(find "$HOME/gradle-dist" -maxdepth 2 -name bin -type d | head -n 1)"
+            echo "$GRADLE_BIN" >> "$GITHUB_PATH"
+            export PATH="$GRADLE_BIN:$PATH"
+          fi
+          gradle --version
+
+      - name: Configure keystores
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          SECRET_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          SECRET_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ ! -f "${{ github.workspace }}/debug.keystore" ] && [ -f "${{ github.workspace }}/debug.keystore.base64" ]; then
+            tr -d '\n\r ' < "${{ github.workspace }}/debug.keystore.base64" | base64 --decode > "${{ github.workspace }}/debug.keystore"
+          fi
+          KEYSTORE_FILE="${{ github.workspace }}/my-upload-key.jks"
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$SECRET_STORE_PASSWORD" ] && [ -n "$SECRET_KEY_PASSWORD" ]; then
+            printf '%s' "$KEYSTORE_BASE64" | tr -d '\n\r ' | base64 --decode > "$KEYSTORE_FILE"
+            echo "KEYSTORE_PATH=$KEYSTORE_FILE" >> "$GITHUB_ENV"
+            echo "STORE_PASSWORD=$SECRET_STORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "KEY_PASSWORD=$SECRET_KEY_PASSWORD" >> "$GITHUB_ENV"
+          else
+            CI_PASS="rivora-ci-release-key"
+            rm -f "$KEYSTORE_FILE"
+            keytool -genkeypair -noprompt -keystore "$KEYSTORE_FILE" -alias upload -keyalg RSA -keysize 2048 -validity 10000 -storepass "$CI_PASS" -keypass "$CI_PASS" -dname "CN=Rivora, OU=Release, O=Rivora, L=Unknown, S=Unknown, C=US"
+            echo "KEYSTORE_PATH=$KEYSTORE_FILE" >> "$GITHUB_ENV"
+            echo "STORE_PASSWORD=$CI_PASS" >> "$GITHUB_ENV"
+            echo "KEY_PASSWORD=$CI_PASS" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build Release APK
+        shell: bash
+        run: |
+          gradle :app:assembleRelease --no-daemon --no-configuration-cache --stacktrace -Dorg.gradle.jvmargs="-Xmx3g -Dfile.encoding=UTF-8"
+          cp app/build/outputs/apk/release/app-release.apk release.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rivora-release-apk
+          path: release.apk
+
+      - if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag_name || github.ref_name }}
+          target_commitish: ${{ github.sha }}
+          name: "Rivora ${{ github.event_name == 'workflow_dispatch' && inputs.tag_name || github.ref_name }}"
+          generate_release_notes: true
+          make_latest: true
+          files: release.apk
