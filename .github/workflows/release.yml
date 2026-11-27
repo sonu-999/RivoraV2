@@ -1,0 +1,86 @@
+name: Build & Publish Release APK
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Release tag (e.g. v1.1.6)"
+        required: true
+        default: "v1.1.6"
+
+permissions:
+  contents: write
+
+jobs:
+  build-release-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.3.1"
+
+      - name: Configure release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          SECRET_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          SECRET_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$SECRET_STORE_PASSWORD" ] && [ -n "$SECRET_KEY_PASSWORD" ]; then
+            echo "$KEYSTORE_BASE64" | base64 --decode > "${{ github.workspace }}/my-upload-key.jks"
+            echo "KEYSTORE_PATH=${{ github.workspace }}/my-upload-key.jks" >> "$GITHUB_ENV"
+            echo "STORE_PASSWORD=$SECRET_STORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "KEY_PASSWORD=$SECRET_KEY_PASSWORD" >> "$GITHUB_ENV"
+          else
+            echo "No release keystore secrets found; generating an ephemeral upload keystore for CI release signing."
+            CI_PASS="rivora-ci-release-key"
+            keytool -genkeypair -v \
+              -keystore "${{ github.workspace }}/my-upload-key.jks" \
+              -alias upload \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -storepass "$CI_PASS" \
+              -keypass "$CI_PASS" \
+              -dname "CN=Rivora, OU=Release, O=Rivora, L=Unknown, S=Unknown, C=US"
+            echo "KEYSTORE_PATH=${{ github.workspace }}/my-upload-key.jks" >> "$GITHUB_ENV"
+            echo "STORE_PASSWORD=$CI_PASS" >> "$GITHUB_ENV"
+            echo "KEY_PASSWORD=$CI_PASS" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build Release APK
+        run: gradle :app:assembleRelease --no-daemon
+
+      - name: Stage release.apk
+        run: cp app/build/outputs/apk/release/app-release.apk release.apk
+
+      - name: Upload release.apk workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rivora-release-apk
+          path: release.apk
+
+      - name: Create GitHub Release with release.apk
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag_name || github.ref_name }}
+          name: "Rivora ${{ inputs.tag_name || github.ref_name }}"
+          generate_release_notes: true
+          files: |
+            release.apk
