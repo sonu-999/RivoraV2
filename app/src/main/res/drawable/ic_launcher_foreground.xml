@@ -1,26 +1,8 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <group
-        android:scaleX="2.0"
-        android:scaleY="2.0"
-        android:translateX="18"
-        android:translateY="18">
-        <!-- Letter S for Sonu combined with dual download streams -->
-        <path
-            android:pathData="M19,8 C19,5.5 16.5,4 13.5,4 C9.5,4 7,6.5 7,10 C7,14 19,13 19,18 C19,21.5 16.5,24 12.5,24 C9,24 7,22 6,20"
-            android:fillColor="#00000000"
-            android:strokeColor="#FF7A29"
-            android:strokeWidth="3.2"
-            android:strokeLineCap="round" />
-        <path
-            android:pathData="M12,2 L12,18 M8,14 L12,18 L16,14"
-            android:fillColor="#00000000"
-            android:strokeColor="#FFFFFF"
-            android:strokeWidth="2.8"
-            android:strokeLineCap="round"
-            android:strokeLineJoin="round" />
-    </group>
-</vector>
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="66dp"
+        android:height="66dp"
+        android:drawable="@drawable/ic_launcher_foreground_asset"
+        android:gravity="center" />
+</layer-list>

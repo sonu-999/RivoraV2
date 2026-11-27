@@ -10,8 +10,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -27,14 +29,17 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.FolderOpen
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,14 +62,72 @@ import androidx.compose.ui.window.DialogProperties
 import com.rivora.theme.RivoraColor
 import com.rivora.theme.RivoraType
 import com.rivora.ui.components.FileTile
-import com.rivora.ui.components.MiniStatBox
 import com.rivora.ui.components.RivoraButton
 import com.rivora.ui.components.RivoraButtonVariant
-import com.rivora.ui.components.RivoraCard
-import com.rivora.ui.components.RivoraInsetBox
 import com.rivora.ui.components.RivoraSwitch
 import com.rivora.util.ByteFormatter
 
+/**
+ * Hallmark-crafted Sibling Stat Bar:
+ * Displays side-by-side telemetry figures separated by 1px hairlines without nested card boxes.
+ */
+@Composable
+fun HallmarkSiblingStatBar(
+    stats: List<Triple<String, String, Color>>,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min)
+            .clip(RoundedCornerShape(10.dp))
+            .background(RivoraColor.SurfaceRaised)
+            .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(10.dp))
+    ) {
+        stats.forEachIndexed { index, (label, value, color) ->
+            if (index > 0) {
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .fillMaxHeight()
+                        .background(RivoraColor.BorderSubtle)
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 10.dp, vertical = 9.dp),
+                verticalArrangement = Arrangement.spacedBy(3.dp)
+            ) {
+                Text(
+                    text = label.uppercase(),
+                    style = RivoraType.MiniLabel.copy(
+                        color = RivoraColor.TextMuted,
+                        letterSpacing = 0.6.sp
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = value,
+                    style = RivoraType.rivoraText(
+                        family = RivoraType.Mono,
+                        size = 14f,
+                        weight = FontWeight.Bold,
+                        tracking = -0.3f,
+                        line = 18f
+                    ).copy(color = color),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Download Detected Sheet — Hallmark Workbench Restyling
+ */
 @Composable
 fun DownloadDetectedDialog(
     detected: DetectedDownload,
@@ -101,16 +164,17 @@ fun DownloadDetectedDialog(
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.92f)
-                .clip(RoundedCornerShape(22.dp))
+                .clip(RoundedCornerShape(18.dp))
                 .background(RivoraColor.Surface)
-                .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(22.dp))
+                .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(18.dp))
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(18.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
+                // Header
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -120,19 +184,34 @@ fun DownloadDetectedDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Download,
-                            contentDescription = "Download detected",
-                            tint = RivoraColor.OrangeBright,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = "Download detected",
-                            style = RivoraType.headingCard.copy(
-                                color = RivoraColor.TextPrimary,
-                                fontSize = 17.sp
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(RivoraColor.OrangeDim)
+                                .border(1.dp, RivoraColor.OrangeBorder, RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Download,
+                                contentDescription = null,
+                                tint = RivoraColor.OrangeBright,
+                                modifier = Modifier.size(18.dp)
                             )
-                        )
+                        }
+                        Column {
+                            Text(
+                                text = "Stream Capture Detected",
+                                style = RivoraType.headingCard.copy(
+                                    color = RivoraColor.TextPrimary,
+                                    fontSize = 16.sp
+                                )
+                            )
+                            Text(
+                                text = "Direct network stream intercepted",
+                                style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted)
+                            )
+                        }
                     }
                     if (detected.isProbing) {
                         CircularProgressIndicator(
@@ -143,41 +222,50 @@ fun DownloadDetectedDialog(
                     }
                 }
 
-                // File summary card
+                // File metadata inspection card (Single well, no double borders)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
                         .background(RivoraColor.SurfaceRaised)
-                        .border(1.dp, RivoraColor.OrangeBorder.copy(alpha = 0.45f), RoundedCornerShape(12.dp))
+                        .border(1.dp, RivoraColor.BorderDefault, RoundedCornerShape(12.dp))
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     FileTile(extension = detected.fileExtension)
-                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(3.dp)
+                    ) {
                         val sizeText = if (detected.totalBytes > 0L) {
                             ByteFormatter.formatBytes(detected.totalBytes)
                         } else {
-                            "Stream / Unknown size"
+                            "Dynamic Stream Size"
                         }
-                        val streamTag = if (detected.isResumable) "Multi-stream ready" else "Single-stream"
+                        val streamTag = if (detected.isResumable) "Multi-stream merge ready" else "Single stream"
                         Text(
                             text = "$sizeText · $streamTag",
-                            style = RivoraType.MetaLine.copy(color = RivoraColor.OrangeBright),
+                            style = RivoraType.rivoraText(
+                                family = RivoraType.Mono,
+                                size = 12f,
+                                weight = FontWeight.SemiBold,
+                                tracking = 0f,
+                                line = 16f
+                            ).copy(color = RivoraColor.OrangeBright),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             text = detected.url,
-                            style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted),
+                            style = RivoraType.MetaLine.copy(color = RivoraColor.TextMuted),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
 
-                // Editable filename input
+                // File name input
                 Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                     Text(
                         text = "FILE NAME",
@@ -186,10 +274,10 @@ fun DownloadDetectedDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(44.dp)
-                            .clip(RoundedCornerShape(10.dp))
+                            .height(42.dp)
+                            .clip(RoundedCornerShape(8.dp))
                             .background(RivoraColor.SurfaceRaised)
-                            .border(1.dp, RivoraColor.BorderDefault, RoundedCornerShape(10.dp))
+                            .border(1.dp, RivoraColor.BorderDefault, RoundedCornerShape(8.dp))
                             .padding(horizontal = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -213,16 +301,21 @@ fun DownloadDetectedDialog(
                     }
                 }
 
-                // Save path row
+                // Destination path row
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(RivoraColor.SurfaceRaised)
+                        .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Save to",
-                            style = RivoraType.RowName.copy(color = RivoraColor.TextSecondary)
+                            text = "Save directory",
+                            style = RivoraType.RowName.copy(color = RivoraColor.TextSecondary, fontSize = 12.sp)
                         )
                         Text(
                             text = detected.saveDisplayPath,
@@ -230,10 +323,18 @@ fun DownloadDetectedDialog(
                         )
                     }
                     RivoraButton(
-                        text = "Change",
+                        text = "Browse",
                         onClick = { folderPicker.launch(null) },
                         variant = RivoraButtonVariant.DARK,
-                        height = 32.dp
+                        height = 30.dp,
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Rounded.FolderOpen,
+                                contentDescription = null,
+                                tint = RivoraColor.TextSecondary,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        }
                     )
                 }
 
@@ -245,11 +346,11 @@ fun DownloadDetectedDialog(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Auto-fetch downloads",
+                            text = "Auto-fetch captured streams",
                             style = RivoraType.RowName.copy(color = RivoraColor.TextPrimary)
                         )
                         Text(
-                            text = "Start Rivora automatically without asking",
+                            text = "Skip confirmation for links tapped in Sonu Merger",
                             style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted)
                         )
                     }
@@ -259,7 +360,7 @@ fun DownloadDetectedDialog(
                     )
                 }
 
-                // Action buttons
+                // Actions
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -274,12 +375,12 @@ fun DownloadDetectedDialog(
                             .testTag("cancel_detected_download_button")
                     )
                     RivoraButton(
-                        text = "Fetch with Rivora",
+                        text = "Fetch with Sonu Merger",
                         onClick = onConfirmDownload,
                         variant = RivoraButtonVariant.AMBER,
                         height = 42.dp,
                         modifier = Modifier
-                            .weight(1.4f)
+                            .weight(1.5f)
                             .testTag("confirm_detected_download_button")
                     )
                 }
@@ -288,6 +389,9 @@ fun DownloadDetectedDialog(
     }
 }
 
+/**
+ * Ad Blocker Control Dialog — Hallmark Workbench Inspection Cockpit
+ */
 @Composable
 fun AdBlockerControlDialog(
     stats: AdBlockStats,
@@ -306,18 +410,19 @@ fun AdBlockerControlDialog(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.92f)
-                .clip(RoundedCornerShape(22.dp))
+                .fillMaxWidth(0.94f)
+                .clip(RoundedCornerShape(18.dp))
                 .background(RivoraColor.Surface)
-                .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(22.dp))
+                .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(18.dp))
                 .padding(18.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
+                // Cockpit Header: Master Shield Switch + Status Badge
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -329,33 +434,54 @@ fun AdBlockerControlDialog(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(38.dp)
-                                .clip(RoundedCornerShape(10.dp))
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(8.dp))
                                 .background(if (stats.isEnabled) RivoraColor.OrangeDim else RivoraColor.SurfaceRaised)
                                 .border(
                                     1.dp,
                                     if (stats.isEnabled) RivoraColor.OrangeBorder else RivoraColor.BorderDefault,
-                                    RoundedCornerShape(10.dp)
+                                    RoundedCornerShape(8.dp)
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Shield,
-                                contentDescription = "Ad Blocker",
+                                contentDescription = "Sonu Merger Ad Shield",
                                 tint = if (stats.isEnabled) RivoraColor.OrangeBright else RivoraColor.TextMuted,
-                                modifier = Modifier.size(20.dp)
+                                modifier = Modifier.size(19.dp)
                             )
                         }
                         Column {
-                            Text(
-                                text = "Rivora Ad Shield",
-                                style = RivoraType.headingCard.copy(
-                                    color = RivoraColor.TextPrimary,
-                                    fontSize = 17.sp
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = "Sonu Merger Ad Shield",
+                                    style = RivoraType.headingCard.copy(
+                                        color = RivoraColor.TextPrimary,
+                                        fontSize = 16.sp
+                                    )
                                 )
-                            )
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(
+                                            if (stats.isEnabled) RivoraColor.OrangeDim else Color(0xFF26262B)
+                                        )
+                                        .padding(horizontal = 5.dp, vertical = 2.dp)
+                                ) {
+                                    Text(
+                                        text = if (stats.isEnabled) "ACTIVE" else "PAUSED",
+                                        style = RivoraType.MiniLabel.copy(
+                                            color = if (stats.isEnabled) RivoraColor.OrangeBright else RivoraColor.TextMuted,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                }
+                            }
                             Text(
-                                text = "EasyList · AdAway · Peter Lowe",
+                                text = "EasyList · AdAway · Peter Lowe (O(1) Domain Filter)",
                                 style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted)
                             )
                         }
@@ -368,78 +494,85 @@ fun AdBlockerControlDialog(
                     )
                 }
 
-                // 3-column metrics
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    MiniStatBox(
-                        label = "This Page",
-                        value = stats.pageBlockedCount.toString(),
-                        valueColor = RivoraColor.OrangeBright,
-                        modifier = Modifier.weight(1f)
+                // Hallmark Sibling Stat Bar (3-column telemetry without box-in-box nesting)
+                HallmarkSiblingStatBar(
+                    stats = listOf(
+                        Triple("This Tab", stats.pageBlockedCount.toString(), RivoraColor.OrangeBright),
+                        Triple("Total Blocked", stats.totalBlockedCount.toString(), RivoraColor.StreamSecondary),
+                        Triple("Active Rules", stats.ruleCount.toString(), RivoraColor.TextPrimary)
                     )
-                    MiniStatBox(
-                        label = "Total Blocked",
-                        value = stats.totalBlockedCount.toString(),
-                        valueColor = RivoraColor.StreamSecondary,
-                        modifier = Modifier.weight(1f)
-                    )
-                    MiniStatBox(
-                        label = "Filter Rules",
-                        value = stats.ruleCount.toString(),
-                        valueColor = RivoraColor.TextPrimary,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
+                )
 
-                // Site-specific allowlist toggle
+                // Active Site Allowlist / Protection Strip
                 if (!currentHost.isNullOrBlank()) {
-                    RivoraInsetBox(padding = 12.dp) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = currentHost,
-                                    style = RivoraType.RowName.copy(color = RivoraColor.TextPrimary),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = if (isCurrentSiteAllowlisted) "Shield paused for this site" else "Shield active on this site",
-                                    style = RivoraType.RowSub.copy(
-                                        color = if (isCurrentSiteAllowlisted) RivoraColor.TextMuted else RivoraColor.OrangeBright
-                                    )
-                                )
-                            }
-                            RivoraButton(
-                                text = if (isCurrentSiteAllowlisted) "Enable" else "Allowlist",
-                                onClick = onToggleSiteAllowlist,
-                                variant = if (isCurrentSiteAllowlisted) RivoraButtonVariant.AMBER else RivoraButtonVariant.DARK,
-                                height = 32.dp,
-                                modifier = Modifier.testTag("adblock_allowlist_button")
-                            )
-                        }
-                    }
-                }
-
-                // Toggles card
-                RivoraCard {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(RivoraColor.SurfaceRaised)
+                            .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(10.dp))
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Block Popups & Redirects",
+                                text = currentHost,
+                                style = RivoraType.rivoraText(
+                                    family = RivoraType.Mono,
+                                    size = 13f,
+                                    weight = FontWeight.SemiBold,
+                                    tracking = 0f,
+                                    line = 17f
+                                ).copy(color = RivoraColor.TextPrimary),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                text = if (isCurrentSiteAllowlisted) {
+                                    "Shield bypassed for this origin"
+                                } else {
+                                    "Shield actively inspecting requests"
+                                },
+                                style = RivoraType.MetaLine.copy(
+                                    color = if (isCurrentSiteAllowlisted) RivoraColor.TextMuted else RivoraColor.OrangeBright
+                                )
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        RivoraButton(
+                            text = if (isCurrentSiteAllowlisted) "Protect" else "Allowlist",
+                            onClick = onToggleSiteAllowlist,
+                            variant = if (isCurrentSiteAllowlisted) RivoraButtonVariant.AMBER else RivoraButtonVariant.DARK,
+                            height = 30.dp,
+                            modifier = Modifier.testTag("adblock_allowlist_button")
+                        )
+                    }
+                }
+
+                // Consolidated Workbench Guard Card (1px dividers between rows)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(RivoraColor.SurfaceRaised)
+                        .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(12.dp))
+                ) {
+                    // Row 1: Popup & Redirect Guard
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Popups & Redirect Guard",
                                 style = RivoraType.RowName.copy(color = RivoraColor.TextPrimary)
                             )
                             Text(
-                                text = "Stops ad tabs & popunders on download sites",
+                                text = "Neutralizes popunders, clickjacking overlays & auto-redirects",
                                 style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted)
                             )
                         }
@@ -456,8 +589,11 @@ fun AdBlockerControlDialog(
                             .background(RivoraColor.BorderSubtle)
                     )
 
+                    // Row 2: Cosmetic Element Hiding
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 12.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -467,7 +603,7 @@ fun AdBlockerControlDialog(
                                 style = RivoraType.RowName.copy(color = RivoraColor.TextPrimary)
                             )
                             Text(
-                                text = "Collapses empty ad frames & sponsored slots",
+                                text = "Collapses empty ad slots, sponsored frames & tracking pixels",
                                 style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted)
                             )
                         }
@@ -478,86 +614,128 @@ fun AdBlockerControlDialog(
                     }
                 }
 
-                // Update open-source lists
-                RivoraInsetBox(padding = 12.dp) {
+                // Upstream Filter Rule Sync
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(RivoraColor.SurfaceRaised)
+                        .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(10.dp))
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Open-Source Filter Rulesets",
+                            style = RivoraType.RowName.copy(color = RivoraColor.TextPrimary, fontSize = 13.sp)
+                        )
+                        Text(
+                            text = stats.updateStatusMessage ?: stats.lastUpdatedLabel ?: "Bundled EasyList + Hosts",
+                            style = RivoraType.MetaLine.copy(color = RivoraColor.TextMuted),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    if (stats.isUpdatingLists) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            color = RivoraColor.OrangeBright,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        RivoraButton(
+                            text = "Sync Feeds",
+                            onClick = onUpdateLists,
+                            variant = RivoraButtonVariant.DARK,
+                            height = 30.dp,
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Rounded.Refresh,
+                                    contentDescription = "Sync open-source lists",
+                                    tint = RivoraColor.TextPrimary,
+                                    modifier = Modifier.size(13.dp)
+                                )
+                            },
+                            modifier = Modifier.testTag("adblock_sync_button")
+                        )
+                    }
+                }
+
+                // Live Intercepted Activity Log (Terminal Stream)
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = "Open-Source Filter Lists",
-                                style = RivoraType.RowName.copy(color = RivoraColor.TextPrimary)
-                            )
-                            Text(
-                                text = stats.updateStatusMessage ?: stats.lastUpdatedLabel ?: "Bundled",
-                                style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        if (stats.isUpdatingLists) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(18.dp),
-                                color = RivoraColor.OrangeBright,
-                                strokeWidth = 2.dp
-                            )
-                        } else {
-                            RivoraButton(
-                                text = "Sync Lists",
-                                onClick = onUpdateLists,
-                                variant = RivoraButtonVariant.DARK,
-                                height = 32.dp,
-                                icon = {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Refresh,
-                                        contentDescription = "Sync open-source lists",
-                                        tint = RivoraColor.TextPrimary,
-                                        modifier = Modifier.size(14.dp)
-                                    )
-                                },
-                                modifier = Modifier.testTag("adblock_sync_button")
-                            )
-                        }
-                    }
-                }
-
-                // Recently blocked domains on page
-                if (stats.recentBlockedDomains.isNotEmpty()) {
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(
-                            text = "RECENTLY BLOCKED ON PAGE",
+                            text = "LIVE INTERCEPTED ACTIVITY STREAM",
                             style = RivoraType.Eyebrow.copy(color = RivoraColor.TextSecondary)
                         )
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(max = 140.dp)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(RivoraColor.SurfaceRaised)
-                                .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(10.dp))
-                                .verticalScroll(rememberScrollState())
-                                .padding(10.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
+                        Text(
+                            text = "${stats.recentBlockedDomains.size} items",
+                            style = RivoraType.MiniLabel.copy(color = RivoraColor.TextMuted)
+                        )
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 140.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(RivoraColor.Canvas)
+                            .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(8.dp))
+                            .verticalScroll(rememberScrollState())
+                            .padding(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
+                        if (stats.recentBlockedDomains.isEmpty()) {
+                            Text(
+                                text = ">> No third-party ad or tracking requests intercepted yet on this page.",
+                                style = RivoraType.MetaLine.copy(
+                                    color = RivoraColor.TextMuted,
+                                    fontSize = 11.sp
+                                )
+                            )
+                        } else {
                             stats.recentBlockedDomains.forEach { domain ->
+                                val tag = when {
+                                    domain.contains("pop") || domain.contains("click") -> "[POPUP]"
+                                    domain.contains("track") || domain.contains("telemetry") || domain.contains("pixel") -> "[TRACK]"
+                                    else -> "[AD]"
+                                }
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        text = domain,
-                                        style = RivoraType.MetaLine.copy(color = RivoraColor.TextPrimary),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.weight(1f)
-                                    )
+                                    Row(
+                                        modifier = Modifier.weight(1f),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                    ) {
+                                        Text(
+                                            text = tag,
+                                            style = RivoraType.MiniLabel.copy(
+                                                color = RivoraColor.OrangeBright,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        )
+                                        Text(
+                                            text = domain,
+                                            style = RivoraType.MetaLine.copy(color = RivoraColor.TextPrimary),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
                                     Text(
                                         text = "BLOCKED",
-                                        style = RivoraType.MiniLabel.copy(color = RivoraColor.DangerText)
+                                        style = RivoraType.MiniLabel.copy(
+                                            color = RivoraColor.DangerText,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
                                     )
                                 }
                             }
@@ -565,6 +743,7 @@ fun AdBlockerControlDialog(
                     }
                 }
 
+                // Done Button
                 RivoraButton(
                     text = "Done",
                     onClick = onDismiss,
@@ -577,6 +756,9 @@ fun AdBlockerControlDialog(
     }
 }
 
+/**
+ * Tabs & Search Engine Dialog — Hallmark Style
+ */
 @Composable
 fun TabsAndSearchDialog(
     tabs: List<BrowserTab>,
@@ -595,15 +777,16 @@ fun TabsAndSearchDialog(
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.92f)
-                .clip(RoundedCornerShape(22.dp))
+                .clip(RoundedCornerShape(18.dp))
                 .background(RivoraColor.Surface)
-                .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(22.dp))
+                .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(18.dp))
                 .padding(18.dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
+                // Header
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -611,45 +794,46 @@ fun TabsAndSearchDialog(
                 ) {
                     Text(
                         text = "Browser Tabs (${tabs.size})",
-                        style = RivoraType.headingCard.copy(color = RivoraColor.TextPrimary, fontSize = 17.sp)
+                        style = RivoraType.headingCard.copy(color = RivoraColor.TextPrimary, fontSize = 16.sp)
                     )
                     RivoraButton(
                         text = "New Tab",
                         onClick = onNewTab,
                         variant = RivoraButtonVariant.AMBER,
-                        height = 34.dp,
+                        height = 32.dp,
                         icon = {
                             Icon(
                                 imageVector = Icons.Rounded.Add,
                                 contentDescription = "New Tab",
                                 tint = Color.White,
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(15.dp)
                             )
                         },
                         modifier = Modifier.testTag("browser_new_tab_button")
                     )
                 }
 
+                // Tabs List
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(max = 240.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     items(tabs, key = { it.id }) { tab ->
                         val isActive = tab.id == activeTabId
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(if (isActive) RivoraColor.SurfaceRaised else RivoraColor.TabTrack)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(if (isActive) RivoraColor.SurfaceRaised else RivoraColor.Canvas)
                                 .border(
                                     1.dp,
                                     if (isActive) RivoraColor.OrangeBorder else RivoraColor.BorderSubtle,
-                                    RoundedCornerShape(12.dp)
+                                    RoundedCornerShape(10.dp)
                                 )
                                 .clickable { onSelectTab(tab.id) }
-                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                                .padding(horizontal = 12.dp, vertical = 9.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
@@ -657,7 +841,7 @@ fun TabsAndSearchDialog(
                                 imageVector = Icons.Rounded.Public,
                                 contentDescription = null,
                                 tint = if (isActive) RivoraColor.OrangeBright else RivoraColor.TextMuted,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(17.dp)
                             )
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
@@ -667,15 +851,15 @@ fun TabsAndSearchDialog(
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
-                                    text = tab.url.ifBlank { "rivora://home" },
-                                    style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted),
+                                    text = tab.url.ifBlank { "sonu://start" },
+                                    style = RivoraType.MetaLine.copy(color = RivoraColor.TextMuted),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
                             Box(
                                 modifier = Modifier
-                                    .size(32.dp)
+                                    .size(30.dp)
                                     .clip(CircleShape)
                                     .background(RivoraColor.Surface)
                                     .clickable { onCloseTab(tab.id) },
@@ -685,45 +869,48 @@ fun TabsAndSearchDialog(
                                     imageVector = Icons.Rounded.Close,
                                     contentDescription = "Close tab",
                                     tint = RivoraColor.TextSecondary,
-                                    modifier = Modifier.size(15.dp)
+                                    modifier = Modifier.size(14.dp)
                                 )
                             }
                         }
                     }
                 }
 
-                Text(
-                    text = "SEARCH ENGINE",
-                    style = RivoraType.Eyebrow.copy(color = RivoraColor.TextSecondary)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    SearchEngine.entries.forEach { engine ->
-                        val selected = engine == searchEngine
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(36.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(if (selected) RivoraColor.OrangeDim else RivoraColor.SurfaceRaised)
-                                .border(
-                                    1.dp,
-                                    if (selected) RivoraColor.OrangeBorder else RivoraColor.BorderSubtle,
-                                    RoundedCornerShape(8.dp)
+                // Search Engine Switcher
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        text = "DEFAULT SEARCH ENGINE",
+                        style = RivoraType.Eyebrow.copy(color = RivoraColor.TextSecondary)
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        SearchEngine.entries.forEach { engine ->
+                            val selected = engine == searchEngine
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(34.dp)
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(if (selected) RivoraColor.OrangeDim else RivoraColor.SurfaceRaised)
+                                    .border(
+                                        1.dp,
+                                        if (selected) RivoraColor.OrangeBorder else RivoraColor.BorderSubtle,
+                                        RoundedCornerShape(6.dp)
+                                    )
+                                    .clickable { onSelectSearchEngine(engine) },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = engine.label.substringBefore(' '),
+                                    style = RivoraType.ButtonLabel.copy(
+                                        color = if (selected) RivoraColor.OrangeBright else RivoraColor.TextSecondary,
+                                        fontSize = 11.sp
+                                    ),
+                                    maxLines = 1
                                 )
-                                .clickable { onSelectSearchEngine(engine) },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = engine.label.substringBefore(' '),
-                                style = RivoraType.ButtonLabel.copy(
-                                    color = if (selected) RivoraColor.OrangeBright else RivoraColor.TextSecondary,
-                                    fontSize = 11.5.sp
-                                ),
-                                maxLines = 1
-                            )
+                            }
                         }
                     }
                 }
@@ -740,6 +927,9 @@ fun TabsAndSearchDialog(
     }
 }
 
+/**
+ * Page Media Inspector Dialog — Hallmark Style
+ */
 @Composable
 fun PageMediaDialog(
     mediaList: List<DetectedPageMedia>,
@@ -753,38 +943,55 @@ fun PageMediaDialog(
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.92f)
-                .clip(RoundedCornerShape(22.dp))
+                .clip(RoundedCornerShape(18.dp))
                 .background(RivoraColor.Surface)
-                .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(22.dp))
+                .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(18.dp))
                 .padding(18.dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                Text(
-                    text = "Detected Files on Page (${mediaList.size})",
-                    style = RivoraType.headingCard.copy(color = RivoraColor.TextPrimary, fontSize = 17.sp)
-                )
-                if (mediaList.isEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
-                        text = "No direct downloadable media or archive links detected on this page yet. Tap any download link on the webpage to capture it automatically.",
-                        style = RivoraType.RowSub.copy(color = RivoraColor.TextSecondary)
+                        text = "Detected Media & Files (${mediaList.size})",
+                        style = RivoraType.headingCard.copy(color = RivoraColor.TextPrimary, fontSize = 16.sp)
                     )
+                }
+
+                if (mediaList.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(RivoraColor.SurfaceRaised)
+                            .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(10.dp))
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No direct media streams or downloadable files detected on this webpage yet.",
+                            style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted)
+                        )
+                    }
                 } else {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = 300.dp),
+                            .heightIn(max = 280.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(mediaList, key = { it.url }) { media ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clip(RoundedCornerShape(12.dp))
+                                    .clip(RoundedCornerShape(10.dp))
                                     .background(RivoraColor.SurfaceRaised)
-                                    .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(12.dp))
+                                    .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(10.dp))
                                     .padding(10.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -799,7 +1006,7 @@ fun PageMediaDialog(
                                     )
                                     Text(
                                         text = "${media.sourceKind} · ${media.url}",
-                                        style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted),
+                                        style = RivoraType.MetaLine.copy(color = RivoraColor.TextMuted),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
@@ -808,12 +1015,13 @@ fun PageMediaDialog(
                                     text = "Fetch",
                                     onClick = { onFetchMedia(media) },
                                     variant = RivoraButtonVariant.AMBER,
-                                    height = 32.dp
+                                    height = 30.dp
                                 )
                             }
                         }
                     }
                 }
+
                 RivoraButton(
                     text = "Done",
                     onClick = onDismiss,

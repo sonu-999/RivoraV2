@@ -37,7 +37,7 @@ data class DetectedDownload(
     val isProbing: Boolean = false,
     val headers: Map<String, String> = emptyMap(),
     val saveTreeUri: Uri? = null,
-    val saveDisplayPath: String = "Downloads/Rivora/"
+    val saveDisplayPath: String = "Downloads/SonuMerger/"
 )
 
 data class DetectedPageMedia(

@@ -782,81 +782,87 @@ private fun BrowserStartPage(
             RivoraCard(hasAura = true) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                        text = "Web & Stream Capture",
+                        text = "Stream & Web Interceptor",
                         style = RivoraType.headingCard.copy(color = RivoraColor.TextPrimary)
                     )
                     Text(
-                        text = "Search via ${searchEngine.label}. Download links, media streams, and magnets route straight into Rivora.",
+                        text = "Search via ${searchEngine.label}. Direct download links, media streams, and magnet URIs route into Sonu Merger.",
                         style = RivoraType.RowSub.copy(color = RivoraColor.TextSecondary)
                     )
                 }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    MiniStatBox(
-                        label = "Blocked",
-                        value = adStats.totalBlockedCount.toString(),
-                        valueColor = RivoraColor.OrangeBright,
-                        modifier = Modifier.weight(1f)
+                // Hallmark Sibling Stat Bar (clean 1px vertical hairlines without double-nesting)
+                HallmarkSiblingStatBar(
+                    stats = listOf(
+                        Triple("Blocked", adStats.totalBlockedCount.toString(), RivoraColor.OrangeBright),
+                        Triple("Rules", adStats.ruleCount.toString(), RivoraColor.StreamSecondary),
+                        Triple("Popups", if (adStats.isEnabled && adStats.blockPopups) "Blocked" else "Allowed", RivoraColor.TextPrimary)
                     )
-                    MiniStatBox(
-                        label = "Rules",
-                        value = adStats.ruleCount.toString(),
-                        valueColor = RivoraColor.StreamSecondary,
-                        modifier = Modifier.weight(1f)
-                    )
-                    MiniStatBox(
-                        label = "Popups",
-                        value = if (adStats.isEnabled && adStats.blockPopups) "Blocked" else "Allowed",
-                        valueColor = RivoraColor.TextPrimary,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
+                )
 
-                // Ad Shield Interactive Row using RivoraInsetBox
-                RivoraInsetBox(
-                    padding = 12.dp,
-                    modifier = Modifier.clickable { onOpenAdBlocker() }
+                // Ad Shield Inspection Strip
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(RivoraColor.SurfaceRaised)
+                        .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(10.dp))
+                        .clickable { onOpenAdBlocker() }
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier.weight(1f)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.weight(1f)
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(if (adStats.isEnabled) RivoraColor.OrangeDim else Color(0xFF26262B)),
+                            contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Shield,
                                 contentDescription = "Ad Shield",
-                                tint = if (adStats.isEnabled) RivoraColor.Orange else RivoraColor.TextMuted,
-                                modifier = Modifier.size(18.dp)
+                                tint = if (adStats.isEnabled) RivoraColor.OrangeBright else RivoraColor.TextMuted,
+                                modifier = Modifier.size(17.dp)
                             )
-                            Column {
+                        }
+                        Column {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
                                 Text(
-                                    text = if (adStats.isEnabled) "Rivora Ad Shield Active" else "Ad Shield Paused",
+                                    text = "Sonu Merger Ad Shield",
                                     style = RivoraType.RowName.copy(color = RivoraColor.TextPrimary)
                                 )
                                 Text(
-                                    text = adStats.lastUpdatedLabel ?: "EasyList · AdAway · Peter Lowe",
-                                    style = RivoraType.MetaLine.copy(color = RivoraColor.TextMuted),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                                    text = if (adStats.isEnabled) "ACTIVE" else "PAUSED",
+                                    style = RivoraType.MiniLabel.copy(
+                                        color = if (adStats.isEnabled) RivoraColor.OrangeBright else RivoraColor.TextMuted,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 )
                             }
-                        }
-                        Text(
-                            text = "Edit ▾",
-                            style = RivoraType.ButtonLabel.copy(
-                                color = RivoraColor.OrangeBright,
-                                fontWeight = FontWeight.SemiBold
+                            Text(
+                                text = adStats.lastUpdatedLabel ?: "EasyList · AdAway · Peter Lowe",
+                                style = RivoraType.MetaLine.copy(color = RivoraColor.TextMuted),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
-                        )
+                        }
                     }
+                    Text(
+                        text = "Inspect ▾",
+                        style = RivoraType.ButtonLabel.copy(
+                            color = RivoraColor.OrangeBright,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
                 }
             }
         }
@@ -881,20 +887,20 @@ private fun BrowserStartPage(
                             Row(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .background(RivoraColor.Surface)
-                                    .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(16.dp))
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(RivoraColor.SurfaceRaised)
+                                    .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(10.dp))
                                     .clickable { onOpenBookmark(bm) }
-                                    .padding(12.dp),
+                                    .padding(10.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
                                 Box(
                                     modifier = Modifier
-                                        .size(38.dp)
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .background(Color(0xFF22222A))
-                                        .border(1.dp, Color(0xFF33333F), RoundedCornerShape(10.dp)),
+                                        .size(34.dp)
+                                        .clip(RoundedCornerShape(6.dp))
+                                        .background(RivoraColor.Canvas)
+                                        .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(6.dp)),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -914,7 +920,7 @@ private fun BrowserStartPage(
                                     )
                                     Text(
                                         text = bm.url.removePrefix("https://").removePrefix("http://"),
-                                        style = RivoraType.RowSub.copy(color = RivoraColor.TextMuted),
+                                        style = RivoraType.MetaLine.copy(color = RivoraColor.TextMuted),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
