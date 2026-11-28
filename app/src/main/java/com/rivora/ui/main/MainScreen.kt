@@ -366,6 +366,20 @@ fun MainScreen(
     }
   }
 
+    // Persistent Top-Level Bottom Bar (Downloads | Browser) when not in Detail view
+    if (state.currentView in listOf("queue", "list", "add", "browser")) {
+      val activeOrQueuedCount = (if (state.activeItem != null && state.activeItem?.status != com.rivora.data.DownloadStatus.FINISHED) 1 else 0) + state.queue.size
+      RivoraPrimaryBottomNav(
+        currentView = state.currentView,
+        activeCount = activeOrQueuedCount,
+        backdrop = backdrop,
+        onSelectDownloads = { viewModel.switchView("queue") },
+        onSelectBrowser = { viewModel.switchView("browser") }
+      )
+    }
+  }
+}
+
   // Full-Page Software Update Screen
   val updateResult by viewModel.updateCheckResult.collectAsStateWithLifecycle()
   val updateDownloadState by viewModel.updateDownloadState.collectAsStateWithLifecycle()
