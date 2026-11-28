@@ -47,26 +47,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kyant.backdrop.backdrops.LayerBackdrop
 import com.rivora.theme.RivoraColor
 import com.rivora.theme.RivoraType
+import com.rivora.theme.liquidGlass
 
 /**
- * Standard Card Container (22dp radius, subtle border, optional ambient orange aura)
+ * Standard Card Container (22dp radius, subtle border, optional ambient orange aura or liquid glass)
  */
 @Composable
 fun RivoraCard(
   modifier: Modifier = Modifier,
   hasAura: Boolean = false,
+  backdrop: LayerBackdrop? = null,
   content: @Composable ColumnScope.() -> Unit
 ) {
-  Box(
-    modifier = modifier
+  val cardModifier = if (backdrop != null) {
+    modifier
+      .fillMaxWidth()
+      .liquidGlass(backdrop, radius = 22.dp)
+  } else {
+    modifier
       .fillMaxWidth()
       .clip(RoundedCornerShape(22.dp))
       .background(RivoraColor.Surface)
       .border(1.dp, RivoraColor.BorderSubtle, RoundedCornerShape(22.dp))
+  }
+
+  Box(
+    modifier = cardModifier
   ) {
-    if (hasAura) {
+    if (hasAura && backdrop == null) {
       Box(
         modifier = Modifier
           .matchParentSize()

@@ -44,10 +44,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kyant.backdrop.backdrops.LayerBackdrop
 import com.rivora.browser.BrowserScreen
 import com.rivora.theme.RivoraColor
 import com.rivora.theme.RivoraType
-import com.rivora.ui.components.LiveStatusPill
+import com.rivora.theme.rememberLiquidBackdrop
+import com.rivora.theme.liquidGlassSource
+import com.rivora.theme.liquidGlass
 import com.rivora.ui.screens.AddDownloadScreen
 import com.rivora.ui.screens.ChunksTab
 import com.rivora.ui.screens.DownloadsListScreen
@@ -57,13 +60,11 @@ import com.rivora.ui.screens.NetworksTab
 import com.rivora.ui.screens.NewDownloadDialog
 import com.rivora.ui.screens.OverviewTab
 import com.rivora.ui.screens.QueueScreen
-import com.rivora.util.ByteFormatter
 import com.rivora.ui.screens.ThroughputTab
+import com.rivora.util.ByteFormatter
 
 /**
- * MainScreen orchestrating the Rivora UI layout.
- * Clean native mobile design with persistent bottom tab navigation bar,
- * uncluttered top telemetry bar, and full vertical content viewport.
+ * MainScreen orchestrating the Rivora UI layout with AndroidLiquidGlass backdrop effects.
  */
 @Composable
 fun MainScreen(
@@ -71,6 +72,7 @@ fun MainScreen(
   modifier: Modifier = Modifier
 ) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
+  val backdrop = rememberLiquidBackdrop()
 
   val totalSpeed = if (state.isPaused) 0f else (state.wifiSpeedMBps + state.cellularSpeedMBps)
   val formattedTotal = ByteFormatter.formatSpeed(totalSpeed, state.unit)
@@ -103,12 +105,16 @@ fun MainScreen(
     (((state.activeItem?.downloadedBytes ?: 0L).toFloat() / (state.activeItem?.totalBytes ?: 1L)) * 100).toInt()
   } else 0
 
-  Column(
+  Box(
     modifier = modifier
       .fillMaxSize()
       .background(RivoraColor.App)
+      .liquidGlassSource(backdrop)
       .statusBarsPadding()
   ) {
+    Column(
+      modifier = Modifier.fillMaxSize()
+    ) {
     when (state.currentView) {
       "add" -> {
         BackHandler { viewModel.switchView("queue") }
@@ -358,18 +364,6 @@ fun MainScreen(
         }
       }
     }
-    }
-
-    // Persistent Top-Level Bottom Bar (Downloads | Browser) when not in Detail view
-    if (state.currentView in listOf("queue", "list", "add", "browser")) {
-      val activeOrQueuedCount = (if (state.activeItem != null && state.activeItem?.status != com.rivora.data.DownloadStatus.FINISHED) 1 else 0) + state.queue.size
-      RivoraPrimaryBottomNav(
-        currentView = state.currentView,
-        activeCount = activeOrQueuedCount,
-        onSelectDownloads = { viewModel.switchView("queue") },
-        onSelectBrowser = { viewModel.switchView("browser") }
-      )
-    }
   }
 
   // Full-Page Software Update Screen
@@ -433,9 +427,10 @@ fun MainScreen(
 }
 
 @Composable
-private fun RivoraPrimaryBottomNav(
+fun RivoraPrimaryBottomNav(
   currentView: String,
   activeCount: Int,
+  backdrop: LayerBackdrop,
   onSelectDownloads: () -> Unit,
   onSelectBrowser: () -> Unit
 ) {
@@ -443,8 +438,7 @@ private fun RivoraPrimaryBottomNav(
   Box(
     modifier = Modifier
       .fillMaxWidth()
-      .background(RivoraColor.Surface)
-      .border(1.dp, RivoraColor.BorderSubtle)
+      .liquidGlass(backdrop, radius = 0.dp, tint = RivoraColor.Surface.copy(alpha = 0.85f))
       .navigationBarsPadding()
       .padding(horizontal = 14.dp, vertical = 8.dp)
   ) {

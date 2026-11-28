@@ -10,12 +10,12 @@ plugins {
 
 android {
   namespace = "com.rivora"
-  compileSdk { version = release(36) { minorApiLevel = 1 } }
+  compileSdk = 37
 
   defaultConfig {
     applicationId = "com.aistudio.rivora.k8m4px"
     minSdk = 24
-    targetSdk = 36
+    targetSdk = 37
     versionCode = 9
     versionName = "1.1.7"
 
@@ -143,6 +143,7 @@ dependencies {
   implementation(libs.okhttp)
   // implementation(libs.play.services.location)
   // implementation(libs.retrofit)
+  implementation("io.github.kyant0:backdrop:2.0.1")
   testImplementation(libs.androidx.compose.ui.test.junit4)
   testImplementation(libs.androidx.core)
   testImplementation(libs.androidx.junit)
